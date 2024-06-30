@@ -104,17 +104,17 @@ class NestOakInstance extends EventEmitter
 }
 
 export class OakAdapter extends AbstractHttpAdapter {
-  private readonly logger: Logger;
-  private readonly routerMethodFactory = new RouterMethodFactory();
+  readonly #logger: Logger;
+  readonly #routerMethodFactory = new RouterMethodFactory();
   constructor(instance: Application, {
     logger = new Logger("platform-oak"),
   }: OakAdapterOptions = {}) {
     super(new NestOakInstance(instance, new Router(), logger));
-    this.logger = logger;
+    this.#logger = logger;
   }
 
   override close(): void {
-    return this.instance?.close();
+    return this.getInstance()?.close();
   }
 
   override listen(
@@ -159,10 +159,10 @@ export class OakAdapter extends AbstractHttpAdapter {
   override createMiddlewareFactory(
     requestMethod: RequestMethod,
   ): MiddlewareFactory | Promise<MiddlewareFactory> {
-    this.logger.warn(
+    this.#logger.warn(
       "OakAdapter.createMiddlewareFactory is not fully tested yet",
     );
-    return this.routerMethodFactory.get(this.instance, requestMethod).bind(
+    return this.#routerMethodFactory.get(this.instance, requestMethod).bind(
       this.instance,
     );
   }
