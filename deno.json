@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "check": "deno fmt --check"
+  },
+  "imports": {
+    "@nestjs/common": "npm:@nestjs/common@^10.3.9",
+    "@nestjs/core": "npm:@nestjs/core@^10.3.9",
+    "@oak/oak": "jsr:@oak/oak@^14.2.0"
+  }
+}
