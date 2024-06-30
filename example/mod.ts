@@ -23,7 +23,7 @@ class AppModule {}
 export async function createNestApp(): Promise<INestApplication> {
   const app = await NestFactory.create(
     AppModule,
-    new OakAdapter(new Application()),
+    OakAdapter.create(),
   );
   return app;
 }
