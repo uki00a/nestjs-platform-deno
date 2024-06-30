@@ -7,7 +7,8 @@ import { Logger } from "@nestjs/common";
 import type { RequestHandler } from "@nestjs/common/interfaces";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import { RouterMethodFactory } from "@nestjs/core/helpers/router-method-factory";
-import type { Application, RouterContext, RouterMiddleware } from "@oak/oak";
+import type { RouterContext, RouterMiddleware } from "@oak/oak";
+import { Application } from "@oak/oak";
 import { Router } from "@oak/oak";
 import { EventEmitter } from "node:events";
 
@@ -106,11 +107,16 @@ class NestOakInstance extends EventEmitter
 export class OakAdapter extends AbstractHttpAdapter {
   readonly #logger: Logger;
   readonly #routerMethodFactory = new RouterMethodFactory();
-  constructor(instance: Application, {
+
+  private constructor(instance: Application, {
     logger = new Logger("platform-oak"),
   }: OakAdapterOptions = {}) {
     super(new NestOakInstance(instance, new Router(), logger));
     this.#logger = logger;
+  }
+
+  static create(application?: Application): OakAdapter {
+    return new OakAdapter(application ?? new Application());
   }
 
   override close(): void {
