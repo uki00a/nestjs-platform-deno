@@ -28,3 +28,6 @@ jobs:
       - name: Run linters
         run:
           deno task check
+      - name: Run tests
+        run:
+          deno task test
