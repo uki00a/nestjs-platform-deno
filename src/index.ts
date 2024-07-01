@@ -4,10 +4,14 @@ import type {
   RequestMethod,
 } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
-import type { RequestHandler } from "@nestjs/common/interfaces";
+import type { RequestHandler as _RequestHandler } from "@nestjs/common/interfaces";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import { RouterMethodFactory } from "@nestjs/core/helpers/router-method-factory";
-import type { RouterContext, RouterMiddleware } from "@oak/oak";
+import type {
+  Request as OakRequest,
+  Response as OakResponse,
+  RouterMiddleware,
+} from "@oak/oak";
 import { Application } from "@oak/oak";
 import { Router } from "@oak/oak";
 import { EventEmitter } from "node:events";
@@ -23,8 +27,7 @@ interface NestHttpServerBridge extends EventEmitter {
   address(): Record<string, unknown>;
 }
 
-type OakContext = RouterContext<string>;
-type OakRequestHandler = RequestHandler<OakContext, OakContext>;
+type OakRequestHandler = _RequestHandler<OakRequest, OakResponse>;
 class NestOakInstance extends EventEmitter
   implements NestHttpServerBridge, Omit<HttpServer, "listen"> {
   private abortController?: AbortController;
@@ -90,6 +93,19 @@ class NestOakInstance extends EventEmitter
     this.router.get(path, handler);
   }
 
+  post(handler: OakRequestHandler): void;
+  post(path: string, handler: OakRequestHandler): void;
+  post(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    const [path, handler] = this.#getPathAndHandler(
+      pathOrHandler,
+      maybeHandler,
+    );
+    this.router.post(path, handler);
+  }
+
   #getPathAndHandler(
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
@@ -100,7 +116,10 @@ class NestOakInstance extends EventEmitter
     if (maybeHandler == null) {
       throw new Error("Not supported");
     }
-    return [pathOrHandler, (ctx, next) => maybeHandler(ctx, ctx, next)];
+    return [
+      pathOrHandler,
+      (ctx, next) => maybeHandler(ctx.request, ctx.response, next),
+    ];
   }
 }
 
@@ -173,25 +192,25 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
-  override isHeadersSent(ctx: OakContext): boolean {
-    return !ctx.response.writable;
+  override isHeadersSent(response: OakResponse): boolean {
+    return !response.writable;
   }
 
   override reply(
-    ctx: OakContext,
+    response: OakResponse,
     body: unknown,
     statusCode?: number | undefined,
   ): void {
     if (statusCode != null) {
-      ctx.response.status = statusCode;
+      response.status = statusCode;
     }
     if (body != null) {
-      ctx.response.body = body;
+      response.body = body;
     }
   }
 
-  override status(ctx: OakContext, statusCode: number): void {
-    ctx.response.status = statusCode;
+  override status(response: OakResponse, statusCode: number): void {
+    response.status = statusCode;
   }
 
   #getInstance(): NestOakInstance | undefined {
