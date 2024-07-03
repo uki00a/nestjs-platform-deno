@@ -9,8 +9,10 @@ import {
   Injectable,
   Module,
   Post,
+  Req,
+  Res,
 } from "@nestjs/common";
-import type { Request } from "@oak/oak";
+import type { Request, Response } from "@oak/oak";
 import assert from "node:assert/strict";
 
 const kTagService = "TagService";
@@ -69,8 +71,10 @@ class ApiController {
   }
 
   @Get("/greet")
-  greet(): string {
-    return "Hello Deno!";
+  greet(@Req() request: Request, @Res() response: Response): void {
+    assert.equal(request.url.pathname, "/api/greet");
+    assert.ok(response.writable);
+    response.body = "Hello Deno!";
   }
 
   @Post("/tags")
