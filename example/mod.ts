@@ -8,6 +8,7 @@ import {
   Inject,
   Injectable,
   Module,
+  Param,
   Post,
   Req,
   Res,
@@ -88,6 +89,11 @@ class ApiController {
     const name = parsed.name;
     assert.ok(name);
     return this.#tagService.add(name);
+  }
+
+  @Get("/tags/:id")
+  getTag(@Param("id") id: string): Promise<Tag> {
+    return this.#tagService.find(id);
   }
 }
 

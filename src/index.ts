@@ -4,13 +4,17 @@ import type {
   RequestMethod,
 } from "@nestjs/common";
 import { Logger } from "@nestjs/common";
-import type { RequestHandler as _RequestHandler } from "@nestjs/common/interfaces";
+import type {
+  ErrorHandler as _ErrorHandler,
+  RequestHandler as _RequestHandler,
+} from "@nestjs/common/interfaces";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import { RouterMethodFactory } from "@nestjs/core/helpers/router-method-factory";
 import type {
+  Middleware as OakMiddleware,
   Request as OakRequest,
   Response as OakResponse,
-  RouterMiddleware,
+  RouterMiddleware as _OakRouterMiddleware,
 } from "@oak/oak";
 import { Application } from "@oak/oak";
 import { Router } from "@oak/oak";
@@ -28,6 +32,14 @@ interface NestHttpServerBridge extends EventEmitter {
 }
 
 type OakRequestHandler = _RequestHandler<OakRequest, OakResponse>;
+type OakErrorHandler = _ErrorHandler<OakRequest, OakResponse>;
+type OakRouterMiddleware = _OakRouterMiddleware<string>;
+function isOakErrorHandler(
+  handler: OakRequestHandler | OakErrorHandler,
+): handler is OakErrorHandler {
+  return handler.length === 4;
+}
+
 class NestOakInstance extends EventEmitter
   implements NestHttpServerBridge, Omit<HttpServer, "listen"> {
   private abortController?: AbortController;
@@ -80,6 +92,48 @@ class NestOakInstance extends EventEmitter
     this.secure = options.httpsOptions ? true : false;
   }
 
+  use(handler: OakRequestHandler | OakErrorHandler): void;
+  use(path: string, handler: OakRequestHandler | OakErrorHandler): void;
+  use(
+    pathOrHandler: string | OakRequestHandler | OakErrorHandler,
+    maybeHandler?: OakRequestHandler | OakErrorHandler,
+  ): void {
+    if (typeof pathOrHandler === "string") {
+      const path = pathOrHandler;
+      const handler = maybeHandler;
+      if (handler == null) throw new Error(`handler is required`);
+      if (isOakErrorHandler(handler)) {
+        throw new Error("An error handler is not supported");
+      }
+      this.router.use(
+        path,
+        (ctx, next) => handler(ctx.request, ctx.response, next),
+      );
+    } else if (isOakErrorHandler(pathOrHandler)) {
+      this.#useErrorHandler(pathOrHandler);
+    } else {
+      this.application.use((ctx, next) =>
+        pathOrHandler(ctx.request, ctx.response, next)
+      );
+    }
+  }
+
+  useOakMiddleware(middleware: OakMiddleware): void;
+  useOakMiddleware(path: string, middleware: OakRouterMiddleware): void;
+  useOakMiddleware(
+    pathOrMiddleware: string | OakMiddleware,
+    maybeMiddleware?: OakRouterMiddleware,
+  ): void {
+    if (typeof pathOrMiddleware === "string") {
+      if (maybeMiddleware == null) {
+        throw new Error("a router middleware is required");
+      }
+      this.router.use(pathOrMiddleware, maybeMiddleware);
+    } else {
+      this.application.use(pathOrMiddleware);
+    }
+  }
+
   get(handler: OakRequestHandler): void;
   get(path: string, handler: OakRequestHandler): void;
   get(
@@ -106,10 +160,16 @@ class NestOakInstance extends EventEmitter
     this.router.post(path, handler);
   }
 
+  #useErrorHandler(handler: OakErrorHandler): void {
+    this.application.addEventListener("error", (e) => {
+      handler(e.error, e.context?.request, e.context?.response, () => {});
+    });
+  }
+
   #getPathAndHandler(
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
-  ): [string, RouterMiddleware<string>] {
+  ): [string, OakRouterMiddleware] {
     if (typeof pathOrHandler === "function") {
       throw new Error("Not supported");
     }
@@ -123,6 +183,7 @@ class NestOakInstance extends EventEmitter
   }
 }
 
+const kParams = "params";
 export class OakAdapter extends AbstractHttpAdapter {
   readonly #logger: Logger;
   readonly #routerMethodFactory = new RouterMethodFactory();
@@ -176,9 +237,19 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   override registerParserMiddleware(
-    _prefix?: string | undefined,
+    prefix?: string | undefined,
     _rawBody?: boolean | undefined,
   ): void {
+    const instance = this.#getInstance();
+    if (instance == null) return;
+    if (prefix == null) {
+      throw new Error("prefix is required");
+    }
+    instance.useOakMiddleware(prefix, async (ctx, next) => {
+      const params = ctx.params;
+      this.#setPropertyToOakRequest(ctx.request, kParams, params);
+      await next();
+    });
   }
 
   override createMiddlewareFactory(
@@ -215,6 +286,15 @@ export class OakAdapter extends AbstractHttpAdapter {
 
   #getInstance(): NestOakInstance | undefined {
     return this.instance;
+  }
+
+  #setPropertyToOakRequest<TKey extends string>(
+    request: OakRequest,
+    key: TKey extends keyof OakRequest ? never : TKey,
+    value: unknown,
+  ): void {
+    // @ts-expect-error This is intended
+    request[key] = value;
   }
 }
 
