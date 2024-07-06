@@ -11,7 +11,7 @@
     ".": "./src/index.ts"
   },
   "imports": {
-    "@uki00a/nestjs-platform-oak": "./src/index.ts",
+    "@uki00a/nestjs-platform-oak": "./packages/nestjs-platform-oak/index.ts",
     "@nestjs/common": "npm:@nestjs/common@^10.3.9",
     "@nestjs/core": "npm:@nestjs/core@^10.3.9",
     "@nestjs/core/helpers/router-method-factory": "npm:/@nestjs/core@^10.3.9/helpers/router-method-factory.js",
