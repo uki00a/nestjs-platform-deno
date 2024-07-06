@@ -9,20 +9,31 @@ Deno.test("e2e", async (t) => {
     assert.equal(await res.text(), "Hello Deno!");
     assert.equal(res.status, 200);
   });
-  await t.step("POST /api/tags", async () => {
-    const name = "foo";
-    const res = await fetch("http://localhost:3000/api/tags", {
-      method: "POST",
-      body: JSON.stringify({ name }),
-      headers: {
-        "content-type": "application/json",
-      },
+  await t.step("/api/tags", async (t) => {
+    await t.step("POST /api/tags and GET /api/tags/:id", async () => {
+      const name = "foo";
+      const res = await fetch("http://localhost:3000/api/tags", {
+        method: "POST",
+        body: JSON.stringify({ name }),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+      const body = await res.json();
+      assert.equal(typeof body, "object");
+      assert.ok(body);
+      assert.equal(body.name, name);
+      assert.ok(body.id);
+
+      {
+        const res = await fetch(`http://localhost:3000/api/tags/${body.id}`);
+        assert(res.ok);
+        const found = await res.json();
+        assert.ok(found);
+        assert.equal(found.name, name);
+        assert.equal(found.id, body.id);
+      }
     });
-    const body = await res.json();
-    assert.equal(typeof body, "object");
-    assert.ok(body);
-    assert.equal(body.name, name);
-    assert.ok(body.id);
   });
   await app.close();
 });
