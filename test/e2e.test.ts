@@ -10,6 +10,22 @@ Deno.test("e2e", async (t) => {
     assert.equal(res.status, 200);
   });
 
+  await t.step("/api/healthcheck", async () => {
+    {
+      const res = await fetch("http://localhost:3000/api/healthcheck");
+      assert(res.ok);
+      assert.equal(await res.json(), true);
+    }
+
+    {
+      const res = await fetch("http://localhost:3000/api/healthcheck", {
+        method: "POST",
+      });
+      assert(res.ok);
+      assert.equal(await res.json(), true);
+    }
+  });
+
   await t.step(
     "`POST /api/tags`, `GET /api/tags/:id`, `PUT /api/tags/:id`, `PATCH /api/tags/:id` and `DELETE /api/tags/:id`",
     async () => {
