@@ -140,11 +140,7 @@ class NestOakInstance extends EventEmitter
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
   ): void {
-    const [path, handler] = this.#getPathAndHandler(
-      pathOrHandler,
-      maybeHandler,
-    );
-    this.router.get(path, handler);
+    this.#addRoute("get", pathOrHandler, maybeHandler);
   }
 
   post(handler: OakRequestHandler): void;
@@ -153,11 +149,7 @@ class NestOakInstance extends EventEmitter
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
   ): void {
-    const [path, handler] = this.#getPathAndHandler(
-      pathOrHandler,
-      maybeHandler,
-    );
-    this.router.post(path, handler);
+    this.#addRoute("post", pathOrHandler, maybeHandler);
   }
 
   patch(handler: OakRequestHandler): void;
@@ -166,11 +158,7 @@ class NestOakInstance extends EventEmitter
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
   ): void {
-    const [path, handler] = this.#getPathAndHandler(
-      pathOrHandler,
-      maybeHandler,
-    );
-    this.router.patch(path, handler);
+    this.#addRoute("patch", pathOrHandler, maybeHandler);
   }
 
   put(handler: OakRequestHandler): void;
@@ -179,11 +167,7 @@ class NestOakInstance extends EventEmitter
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
   ): void {
-    const [path, handler] = this.#getPathAndHandler(
-      pathOrHandler,
-      maybeHandler,
-    );
-    this.router.put(path, handler);
+    this.#addRoute("put", pathOrHandler, maybeHandler);
   }
 
   delete(handler: OakRequestHandler): void;
@@ -192,11 +176,54 @@ class NestOakInstance extends EventEmitter
     pathOrHandler: string | OakRequestHandler,
     maybeHandler?: OakRequestHandler,
   ): void {
+    this.#addRoute("delete", pathOrHandler, maybeHandler);
+  }
+
+  head(handler: OakRequestHandler): void;
+  head(path: string, handler: OakRequestHandler): void;
+  head(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    this.#addRoute("head", pathOrHandler, maybeHandler);
+  }
+
+  options(handler: OakRequestHandler): void;
+  options(path: string, handler: OakRequestHandler): void;
+  options(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    this.#addRoute("options", pathOrHandler, maybeHandler);
+  }
+
+  all(path: string, handler: OakRequestHandler): void;
+  all(handler: OakRequestHandler): void;
+  all(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    this.#addRoute("all", pathOrHandler, maybeHandler);
+  }
+
+  #addRoute(
+    method:
+      | "get"
+      | "delete"
+      | "patch"
+      | "post"
+      | "put"
+      | "options"
+      | "head"
+      | "all",
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler: OakRequestHandler | undefined,
+  ): void {
     const [path, handler] = this.#getPathAndHandler(
       pathOrHandler,
       maybeHandler,
     );
-    this.router.delete(path, handler);
+    this.router[method](path, handler);
   }
 
   #useErrorHandler(handler: OakErrorHandler): void {

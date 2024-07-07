@@ -2,14 +2,17 @@ import { OakAdapter } from "@uki00a/nestjs-platform-oak";
 import { NestFactory } from "@nestjs/core";
 import type { INestApplication } from "@nestjs/common";
 import {
+  All,
   Body,
   Controller,
   Delete,
   Get,
+  Head,
   HttpCode,
   Inject,
   Injectable,
   Module,
+  Options,
   Param,
   Patch,
   Post,
@@ -133,6 +136,17 @@ class ApiController {
   deleteTag(@Param("id") id: string): Promise<void> {
     return this.#tagService.delete(id);
   }
+
+  @All("/healthcheck")
+  healthcheck(): boolean {
+    return true;
+  }
+
+  @Head("/head")
+  head(): void {}
+
+  @Options("/options")
+  options(): void {}
 }
 
 @Module({
