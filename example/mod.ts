@@ -4,12 +4,16 @@ import type { INestApplication } from "@nestjs/common";
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Inject,
   Injectable,
   Module,
   Param,
+  Patch,
   Post,
+  Put,
   Req,
   Res,
 } from "@nestjs/common";
@@ -91,9 +95,43 @@ class ApiController {
     return this.#tagService.add(name);
   }
 
+  @Put("/tags/:id")
+  async putTag(
+    @Param("id") id: string,
+    @Body() body: Request["body"],
+  ): Promise<Tag> {
+    assert.ok(body);
+    assert.ok(body.has);
+    assert.equal(body.type(), "json");
+    assert(!body.used);
+    const parsed = await body.json();
+    assert.ok(parsed);
+    return this.#tagService.update({ id, ...parsed });
+  }
+
+  @Patch("/tags/:id")
+  async patchTag(
+    @Param("id") id: string,
+    @Body() body: Request["body"],
+  ) {
+    assert.ok(body);
+    assert.ok(body.has);
+    assert.equal(body.type(), "json");
+    assert(!body.used);
+    const parsed = await body.json();
+    assert.ok(parsed);
+    return this.#tagService.update({ id, ...parsed });
+  }
+
   @Get("/tags/:id")
   getTag(@Param("id") id: string): Promise<Tag> {
     return this.#tagService.find(id);
+  }
+
+  @Delete("/tags/:id")
+  @HttpCode(204)
+  deleteTag(@Param("id") id: string): Promise<void> {
+    return this.#tagService.delete(id);
   }
 }
 
