@@ -160,6 +160,45 @@ class NestOakInstance extends EventEmitter
     this.router.post(path, handler);
   }
 
+  patch(handler: OakRequestHandler): void;
+  patch(path: string, handler: OakRequestHandler): void;
+  patch(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    const [path, handler] = this.#getPathAndHandler(
+      pathOrHandler,
+      maybeHandler,
+    );
+    this.router.patch(path, handler);
+  }
+
+  put(handler: OakRequestHandler): void;
+  put(path: string, handler: OakRequestHandler): void;
+  put(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    const [path, handler] = this.#getPathAndHandler(
+      pathOrHandler,
+      maybeHandler,
+    );
+    this.router.put(path, handler);
+  }
+
+  delete(handler: OakRequestHandler): void;
+  delete(path: string, handler: OakRequestHandler): void;
+  delete(
+    pathOrHandler: string | OakRequestHandler,
+    maybeHandler?: OakRequestHandler,
+  ): void {
+    const [path, handler] = this.#getPathAndHandler(
+      pathOrHandler,
+      maybeHandler,
+    );
+    this.router.delete(path, handler);
+  }
+
   #useErrorHandler(handler: OakErrorHandler): void {
     this.application.addEventListener("error", (e) => {
       handler(e.error, e.context?.request, e.context?.response, () => {});

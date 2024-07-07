@@ -4,14 +4,17 @@ import assert from "node:assert/strict";
 Deno.test("e2e", async (t) => {
   const app = await createNestApp();
   await app.listen(3000);
-  await t.step("GET /api/greet", async () => {
+  await t.step("`GET /api/greet`", async () => {
     const res = await fetch("http://localhost:3000/api/greet");
     assert.equal(await res.text(), "Hello Deno!");
     assert.equal(res.status, 200);
   });
-  await t.step("/api/tags", async (t) => {
-    await t.step("POST /api/tags and GET /api/tags/:id", async () => {
+
+  await t.step(
+    "`POST /api/tags`, `GET /api/tags/:id`, `PUT /api/tags/:id`, `PATCH /api/tags/:id` and `DELETE /api/tags/:id`",
+    async () => {
       const name = "foo";
+      // POST /api/tags
       const res = await fetch("http://localhost:3000/api/tags", {
         method: "POST",
         body: JSON.stringify({ name }),
@@ -26,6 +29,7 @@ Deno.test("e2e", async (t) => {
       assert.ok(body.id);
 
       {
+        // GET /api/tags/:id
         const res = await fetch(`http://localhost:3000/api/tags/${body.id}`);
         assert(res.ok);
         const found = await res.json();
@@ -33,7 +37,49 @@ Deno.test("e2e", async (t) => {
         assert.equal(found.name, name);
         assert.equal(found.id, body.id);
       }
-    });
-  });
+
+      {
+        // PUT /api/tags/:id
+        const name = "bar";
+        const res = await fetch(`http://localhost:3000/api/tags/${body.id}`, {
+          method: "PUT",
+          body: JSON.stringify({ name }),
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+        assert(res.ok);
+        const result = await res.json();
+        assert.ok(result);
+        assert.equal(result.id, body.id);
+        assert.equal(result.name, name);
+      }
+
+      {
+        // PATCH /api/tags/:id
+        const name = "baz";
+        const res = await fetch(`http://localhost:3000/api/tags/${body.id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ name }),
+          headers: {
+            "content-type": "application/json",
+          },
+        });
+        assert(res.ok);
+        const result = await res.json();
+        assert.ok(result);
+        assert.equal(result.id, body.id);
+        assert.equal(result.name, name);
+      }
+
+      {
+        // DELETE /api/tags/:id
+        const res = await fetch(`http://localhost:3000/api/tags/${body.id}`, {
+          method: "DELETE",
+        });
+        assert.equal(res.status, 204);
+      }
+    },
+  );
   await app.close();
 });
