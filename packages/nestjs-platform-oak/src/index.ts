@@ -321,12 +321,13 @@ export class OakAdapter extends AbstractHttpAdapter {
   override createMiddlewareFactory(
     requestMethod: RequestMethod,
   ): MiddlewareFactory | Promise<MiddlewareFactory> {
-    this.#logger.warn(
-      "OakAdapter.createMiddlewareFactory is not fully tested yet",
-    );
     return this.#routerMethodFactory.get(this.instance, requestMethod).bind(
       this.instance,
     );
+  }
+
+  override getRequestMethod(request: OakRequest): Lowercase<Request["method"]> {
+    return toLowerCase(request.method);
   }
 
   override isHeadersSent(response: OakResponse): boolean {
@@ -370,3 +371,8 @@ type MiddlewareFactory = (
   callback: Function,
   // deno-lint-ignore no-explicit-any
 ) => any;
+
+function toLowerCase<T extends string>(s: T): Lowercase<T> {
+  // @ts-expect-error `.toLowerCase()` returns a string converted to lower case
+  return s.toLowerCase();
+}

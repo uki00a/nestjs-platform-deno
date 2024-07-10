@@ -1,6 +1,11 @@
 import { OakAdapter } from "@uki00a/nestjs-platform-oak";
 import { NestFactory } from "@nestjs/core";
-import type { INestApplication } from "@nestjs/common";
+import type {
+  INestApplication,
+  MiddlewareConsumer,
+  NestMiddleware,
+  NestModule,
+} from "@nestjs/common";
 import {
   All,
   Body,
@@ -11,6 +16,7 @@ import {
   HttpCode,
   Inject,
   Injectable,
+  Logger,
   Module,
   Options,
   Param,
@@ -149,6 +155,20 @@ class ApiController {
   options(): void {}
 }
 
+@Injectable()
+class SampleMiddleware implements NestMiddleware {
+  #logger = new Logger("sample");
+  use(req: Request, res: Response, next: (error?: unknown) => void): void {
+    assert(
+      req.headers instanceof Headers,
+      "`req` should be instance of `Request`",
+    );
+    this.#logger.log(`${req.method} ${req.url.pathname}`);
+    res.headers.set("x-foo", "bar");
+    next();
+  }
+}
+
 @Module({
   providers: [
     {
@@ -160,7 +180,13 @@ class ApiController {
     ApiController,
   ],
 })
-class AppModule {}
+class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer
+      .apply(SampleMiddleware)
+      .forRoutes(ApiController);
+  }
+}
 
 export async function createNestApp(): Promise<INestApplication> {
   const app = await NestFactory.create(

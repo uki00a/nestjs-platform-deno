@@ -15,6 +15,7 @@ Deno.test("e2e", async (t) => {
       const res = await fetch("http://localhost:3000/api/healthcheck");
       assert(res.ok);
       assert.equal(await res.json(), true);
+      assert.equal(res.headers.get("x-foo"), "bar");
     }
 
     {
@@ -23,6 +24,7 @@ Deno.test("e2e", async (t) => {
       });
       assert(res.ok);
       assert.equal(await res.json(), true);
+      assert.equal(res.headers.get("x-foo"), "bar");
     }
   });
 
