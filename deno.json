@@ -5,7 +5,8 @@
   },
   "tasks": {
     "check": "deno fmt --check && deno lint",
-    "test": "deno test --allow-net --no-check ./test"
+    "test": "deno test --allow-net --no-check ./test",
+    "test:ci": "deno test --allow-net --no-check --frozen-lockfile ./test"
   },
   "imports": {
     "@uki00a/nestjs-platform-oak": "./packages/nestjs-platform-oak/src/index.ts",
