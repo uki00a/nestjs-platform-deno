@@ -9,7 +9,6 @@ import type {
   RequestHandler as _RequestHandler,
 } from "@nestjs/common/interfaces";
 import { AbstractHttpAdapter } from "@nestjs/core";
-import { RouterMethodFactory } from "@nestjs/core/helpers/router-method-factory";
 import type {
   Middleware as OakMiddleware,
   Request as OakRequest,
@@ -252,7 +251,6 @@ class NestOakInstance extends EventEmitter
 const kParams = "params";
 export class OakAdapter extends AbstractHttpAdapter {
   readonly #logger: Logger;
-  readonly #routerMethodFactory = new RouterMethodFactory();
 
   private constructor(instance: Application, {
     logger = new Logger("platform-oak"),
@@ -319,14 +317,27 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   override createMiddlewareFactory(
-    requestMethod: RequestMethod,
+    _requestMethod: RequestMethod,
   ): MiddlewareFactory | Promise<MiddlewareFactory> {
-    this.#logger.warn(
-      "OakAdapter.createMiddlewareFactory is not fully tested yet",
-    );
-    return this.#routerMethodFactory.get(this.instance, requestMethod).bind(
-      this.instance,
-    );
+    const instance = this.#getInstance();
+    if (instance == null) {
+      throw new Error("An instance is not initialized yet");
+    }
+    const middlewareFactory: MiddlewareFactory = (_path, callback) => {
+      instance.useOakMiddleware((ctx, next) => {
+        return new Promise<unknown>((resolve, reject) => {
+          callback(ctx.request, ctx.response, () => {
+            const r = next();
+            r.then(resolve, reject);
+          });
+        });
+      });
+    };
+    return middlewareFactory;
+  }
+
+  override getRequestMethod(request: OakRequest): Lowercase<Request["method"]> {
+    return toLowerCase(request.method);
   }
 
   override isHeadersSent(response: OakResponse): boolean {
@@ -370,3 +381,8 @@ type MiddlewareFactory = (
   callback: Function,
   // deno-lint-ignore no-explicit-any
 ) => any;
+
+function toLowerCase<T extends string>(s: T): Lowercase<T> {
+  // @ts-expect-error `.toLowerCase()` returns a string converted to lower case
+  return s.toLowerCase();
+}

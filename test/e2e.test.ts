@@ -8,6 +8,7 @@ Deno.test("e2e", async (t) => {
     const res = await fetch("http://localhost:3000/api/greet");
     assert.equal(await res.text(), "Hello Deno!");
     assert.equal(res.status, 200);
+    assert.equal(res.headers.get("x-foo"), "bar");
   });
 
   await t.step("/api/healthcheck", async () => {
@@ -15,6 +16,7 @@ Deno.test("e2e", async (t) => {
       const res = await fetch("http://localhost:3000/api/healthcheck");
       assert(res.ok);
       assert.equal(await res.json(), true);
+      assert.equal(res.headers.get("x-foo"), "bar");
     }
 
     {
@@ -23,6 +25,7 @@ Deno.test("e2e", async (t) => {
       });
       assert(res.ok);
       assert.equal(await res.json(), true);
+      assert.equal(res.headers.get("x-foo"), "bar");
     }
   });
 
@@ -52,6 +55,7 @@ Deno.test("e2e", async (t) => {
         assert.ok(found);
         assert.equal(found.name, name);
         assert.equal(found.id, body.id);
+        assert.equal(res.headers.get("x-foo"), "bar");
       }
 
       {
@@ -69,6 +73,7 @@ Deno.test("e2e", async (t) => {
         assert.ok(result);
         assert.equal(result.id, body.id);
         assert.equal(result.name, name);
+        assert.equal(res.headers.get("x-foo"), "bar");
       }
 
       {
@@ -86,6 +91,7 @@ Deno.test("e2e", async (t) => {
         assert.ok(result);
         assert.equal(result.id, body.id);
         assert.equal(result.name, name);
+        assert.equal(res.headers.get("x-foo"), "bar");
       }
 
       {
@@ -94,6 +100,7 @@ Deno.test("e2e", async (t) => {
           method: "DELETE",
         });
         assert.equal(res.status, 204);
+        assert.equal(res.headers.get("x-foo"), "bar");
       }
     },
   );
