@@ -30,4 +30,4 @@ jobs:
           deno task check
       - name: Run tests
         run:
-          deno task test
+          deno task test --frozen-lockfile
