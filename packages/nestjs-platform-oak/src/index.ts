@@ -340,6 +340,14 @@ export class OakAdapter extends AbstractHttpAdapter {
     return toLowerCase(request.method);
   }
 
+  override getRequestUrl(request: OakRequest): string {
+    return request.url.pathname;
+  }
+
+  override getRequestHostname(request: OakRequest): string {
+    return request.url.hostname;
+  }
+
   override isHeadersSent(response: OakResponse): boolean {
     return !response.writable;
   }
