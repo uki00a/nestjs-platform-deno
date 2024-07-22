@@ -121,7 +121,7 @@ class NestOakInstance extends EventEmitter
         (ctx, next) => handler(ctx.request, ctx.response, next),
       );
     } else if (isOakErrorHandler(pathOrHandler)) {
-      this.#useErrorHandler(pathOrHandler);
+      this.useErrorHandler(pathOrHandler);
     } else {
       this.application.use((ctx, next) =>
         pathOrHandler(ctx.request, ctx.response, next)
@@ -237,7 +237,7 @@ class NestOakInstance extends EventEmitter
     this.router[method](path, handler);
   }
 
-  #useErrorHandler(handler: OakErrorHandler): void {
+  useErrorHandler(handler: OakErrorHandler): void {
     this.application.addEventListener("error", (e) => {
       handler(e.error, e.context?.request, e.context?.response, () => {});
     });
@@ -351,23 +351,27 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   override setErrorHandler(
-    // deno-lint-ignore ban-types
-    _handler: Function,
-    _prefix?: string,
+    handler: OakErrorHandler,
+    prefix?: string,
   ): void {
-    throw new NotImplementedError(
-      "OakAdapter#setErrorHandler is not supported yet",
-    );
+    if (prefix) {
+      throw new NotImplementedError(
+        "OakAdapter#setErrorHandler: prefix is not supported yet",
+      );
+    }
+    this.#getInstance()?.useErrorHandler(handler);
   }
 
   override setNotFoundHandler(
-    // deno-lint-ignore ban-types
-    _handler: Function,
-    _prefix?: string,
+    handler: OakErrorHandler,
+    prefix?: string,
   ): void {
-    throw new NotImplementedError(
-      "OakAdapter#setNotFoundHandler is not supported yet",
-    );
+    if (prefix) {
+      throw new NotImplementedError(
+        "OakAdapter#setNotFoundHandler: prefix is not supported yet",
+      );
+    }
+    this.#getInstance()?.useErrorHandler(handler);
   }
 
   override setViewEngine(_engine: string): void {

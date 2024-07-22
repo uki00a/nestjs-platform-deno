@@ -104,5 +104,12 @@ Deno.test("e2e", async (t) => {
       }
     },
   );
+
+  await t.step("404", async () => {
+    const res = await fetch("http://localhost:3000/api/no_such_route");
+    const _text = await res.text();
+    assert.equal(res.status, 404);
+  });
+
   await app.close();
 });
