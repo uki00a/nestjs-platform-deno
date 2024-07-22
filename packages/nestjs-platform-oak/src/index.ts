@@ -7,7 +7,13 @@ import { Logger } from "@nestjs/common";
 import type {
   ErrorHandler as _ErrorHandler,
   RequestHandler as _RequestHandler,
+  VersioningOptions,
+  VersionValue,
 } from "@nestjs/common/interfaces";
+import type {
+  CorsOptions,
+  CorsOptionsDelegate,
+} from "@nestjs/common/interfaces/external/cors-options.interface.ts";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type {
   Middleware as OakMiddleware,
@@ -37,6 +43,12 @@ function isOakErrorHandler(
   handler: OakRequestHandler | OakErrorHandler,
 ): handler is OakErrorHandler {
   return handler.length === 4;
+}
+
+class NotImplementedError extends Error {
+  constructor(name?: string) {
+    super(name);
+  }
 }
 
 class NestOakInstance extends EventEmitter
@@ -102,7 +114,7 @@ class NestOakInstance extends EventEmitter
       const handler = maybeHandler;
       if (handler == null) throw new Error(`handler is required`);
       if (isOakErrorHandler(handler)) {
-        throw new Error("An error handler is not supported");
+        throw new NotImplementedError("An error handler is not supported yet");
       }
       this.router.use(
         path,
@@ -125,7 +137,7 @@ class NestOakInstance extends EventEmitter
   ): void {
     if (typeof pathOrMiddleware === "string") {
       if (maybeMiddleware == null) {
-        throw new Error("a router middleware is required");
+        throw new NotImplementedError("A router middleware is required");
       }
       this.router.use(pathOrMiddleware, maybeMiddleware);
     } else {
@@ -248,15 +260,17 @@ class NestOakInstance extends EventEmitter
   }
 }
 
+interface VersionedRoute {
+  // deno-lint-ignore no-explicit-any, ban-types
+  (req: any, res: any, next: () => void): Function;
+}
+
 const kParams = "params";
 export class OakAdapter extends AbstractHttpAdapter {
-  readonly #logger: Logger;
-
   private constructor(instance: Application, {
     logger = new Logger("platform-oak"),
   }: OakAdapterOptions = {}) {
     super(new NestOakInstance(instance, new Router(), logger));
-    this.#logger = logger;
   }
 
   static create(application?: Application): OakAdapter {
@@ -334,6 +348,58 @@ export class OakAdapter extends AbstractHttpAdapter {
       });
     };
     return middlewareFactory;
+  }
+
+  override setErrorHandler(
+    // deno-lint-ignore ban-types
+    _handler: Function,
+    _prefix?: string,
+  ): void {
+    throw new NotImplementedError(
+      "OakAdapter#setErrorHandler is not supported yet",
+    );
+  }
+
+  override setNotFoundHandler(
+    // deno-lint-ignore ban-types
+    _handler: Function,
+    _prefix?: string,
+  ): void {
+    throw new NotImplementedError(
+      "OakAdapter#setNotFoundHandler is not supported yet",
+    );
+  }
+
+  override setViewEngine(_engine: string): void {
+    throw new NotImplementedError(
+      "OakAdapter#setViewEngine is not supported yet",
+    );
+  }
+
+  override useStaticAssets(..._args: unknown[]): void {
+    throw new NotImplementedError(
+      "OakAdapter#useStaticAssets is not supported yet",
+    );
+  }
+
+  override enableCors(
+    _options: CorsOptions | CorsOptionsDelegate<OakRequest>,
+    _prefix?: string,
+  ) {
+    throw new NotImplementedError(
+      "OakAdapter#enableCors is not supported yet",
+    );
+  }
+
+  override applyVersionFilter(
+    // deno-lint-ignore ban-types
+    _handler: Function,
+    _version: VersionValue,
+    _versioningOptions: VersioningOptions,
+  ): VersionedRoute {
+    throw new NotImplementedError(
+      "OakAdapter#applyVersionFilter is not supported yet",
+    );
   }
 
   override getRequestMethod(request: OakRequest): Lowercase<Request["method"]> {
