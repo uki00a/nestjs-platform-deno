@@ -111,5 +111,11 @@ Deno.test("e2e", async (t) => {
     assert.equal(res.status, 404);
   });
 
+  await t.step("GET `/api/error`", async () => {
+    const res = await fetch("http://localhost:3000/api/error");
+    assert.equal(res.status, 500);
+    assert.equal(await res.text(), "NG");
+  });
+
   await app.close();
 });
