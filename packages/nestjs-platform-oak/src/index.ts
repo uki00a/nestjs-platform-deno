@@ -3,7 +3,7 @@ import type {
   NestApplicationOptions,
   RequestMethod,
 } from "@nestjs/common";
-import { Logger } from "@nestjs/common";
+import { HttpException, Logger } from "@nestjs/common";
 import type {
   ErrorHandler as _ErrorHandler,
   RequestHandler as _RequestHandler,
@@ -363,15 +363,37 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   override setNotFoundHandler(
-    handler: OakErrorHandler,
+    handler: OakRequestHandler,
     prefix?: string,
   ): void {
-    if (prefix) {
-      throw new NotImplementedError(
-        "OakAdapter#setNotFoundHandler: prefix is not supported yet",
-      );
+    if (handler.length !== 3) {
+      throw new Error("OakAdapter#setNotFoundHandler: a handler is invalid");
     }
-    this.#getInstance()?.useErrorHandler(handler);
+
+    const middleware: OakMiddleware = async (ctx, next) => {
+      try {
+        await next();
+      } catch (error) {
+        if (!(error instanceof HttpException) || error.getStatus() !== 404) {
+          throw error;
+        }
+
+        /**
+         * NOTE: NestJS does not call `next()`.
+         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/router-proxy.ts#L21}
+         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/routes-resolver.ts#L144-L149}
+         */
+        const mustNotBeCalled = () => {
+          throw new Error("[BUG] next() was unexpectedly called");
+        };
+        handler(ctx.request, ctx.response, mustNotBeCalled);
+      }
+    };
+    if (prefix) {
+      this.#getInstance()?.useOakMiddleware(prefix, middleware);
+    } else {
+      this.#getInstance()?.useOakMiddleware(middleware);
+    }
   }
 
   override setViewEngine(_engine: string): void {
