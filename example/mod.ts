@@ -1,6 +1,8 @@
 import { OakAdapter } from "@uki00a/nestjs-platform-oak";
 import { NestFactory } from "@nestjs/core";
 import type {
+  ArgumentsHost,
+  ExceptionFilter,
   INestApplication,
   MiddlewareConsumer,
   NestMiddleware,
@@ -9,11 +11,13 @@ import type {
 import {
   All,
   Body,
+  Catch,
   Controller,
   Delete,
   Get,
   Head,
   HttpCode,
+  HttpException,
   Inject,
   Injectable,
   Logger,
@@ -25,6 +29,7 @@ import {
   Put,
   Req,
   Res,
+  UseFilters,
 } from "@nestjs/common";
 import type { Request, Response } from "@oak/oak";
 import assert from "node:assert/strict";
@@ -74,6 +79,16 @@ class InMemoryTagService implements TagService {
     const newTag = { ...tag, ...rest };
     this.#tagByID[id] = newTag;
     return Promise.resolve({ ...newTag });
+  }
+}
+
+@Catch(HttpException)
+class HttpExceptionFilter implements ExceptionFilter {
+  catch(exception: HttpException, host: ArgumentsHost): void {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    response.status = exception.getStatus();
+    response.body = exception.getResponse();
   }
 }
 
@@ -153,6 +168,12 @@ class ApiController {
 
   @Options("/options")
   options(): void {}
+
+  @Get("/error")
+  @UseFilters(HttpExceptionFilter)
+  error(): void {
+    throw new HttpException("NG", 500);
+  }
 }
 
 @Injectable()
