@@ -359,6 +359,11 @@ export class OakAdapter extends AbstractHttpAdapter {
         "OakAdapter#setErrorHandler: prefix is not supported yet",
       );
     }
+    if (handler.length !== 4) {
+      throw new Error(
+        "OakAdapter#setErrorHandler: an error handler should receive 4 arguments",
+      );
+    }
     this.#getInstance()?.useErrorHandler(handler);
   }
 
