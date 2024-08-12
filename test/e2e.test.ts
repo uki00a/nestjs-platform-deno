@@ -105,6 +105,15 @@ Deno.test("e2e", async (t) => {
     },
   );
 
+  await t.step("GET `/api/redirect`", async () => {
+    const res = await fetch("http://localhost:3000/api/redirect", {
+      redirect: "manual",
+    });
+    assert.equal(res.status, 303);
+    assert.equal(res.headers.get("location"), "/api/greet");
+    const _ = await res.text();
+  });
+
   await t.step("404", async () => {
     const res = await fetch("http://localhost:3000/api/no_such_route");
     const _text = await res.text();
