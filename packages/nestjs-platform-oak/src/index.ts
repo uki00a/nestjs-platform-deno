@@ -474,6 +474,11 @@ export class OakAdapter extends AbstractHttpAdapter {
     response.status = statusCode;
   }
 
+  override redirect(response: OakResponse, statusCode: number, url: string) {
+    response.status = statusCode;
+    response.redirect(url);
+  }
+
   #getInstance(): NestOakInstance | undefined {
     return this.instance;
   }

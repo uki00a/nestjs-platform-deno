@@ -27,6 +27,7 @@ import {
   Patch,
   Post,
   Put,
+  Redirect,
   Req,
   Res,
   UseFilters,
@@ -174,6 +175,10 @@ class ApiController {
   error(): void {
     throw new HttpException("NG", 500);
   }
+
+  @Get("/redirect")
+  @Redirect("/api/greet", 303)
+  redirect(): void {}
 }
 
 @Injectable()
