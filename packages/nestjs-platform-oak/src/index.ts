@@ -88,14 +88,17 @@ class NestOakInstance extends EventEmitter
     this.application.use(this.router.routes());
     this.application.use(this.router.allowedMethods());
     const securityOptions = this.#httpOptions
-      ? { secure: true as const, cert: this.#httpOptions.cert, key: this.#httpOptions.key }
+      ? {
+        secure: true as const,
+        cert: this.#httpOptions.cert,
+        key: this.#httpOptions.key,
+      }
       : { secure: false as const };
-    this.#httpOptions?.cert
     this.application.listen({
       port,
       hostname,
       signal: abortController.signal,
-      ...securityOptions
+      ...securityOptions,
     });
   }
 
