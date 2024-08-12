@@ -14,6 +14,7 @@ import type {
   CorsOptions,
   CorsOptionsDelegate,
 } from "@nestjs/common/interfaces/external/cors-options.interface.ts";
+import type { HttpsOptions } from "@nestjs/common/interfaces/external/https-options.interface.ts";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type {
   Middleware as OakMiddleware,
@@ -54,7 +55,6 @@ class NotImplementedError extends Error {
 class NestOakInstance extends EventEmitter
   implements NestHttpServerBridge, Omit<HttpServer, "listen"> {
   private abortController?: AbortController;
-  private secure?: boolean;
   private port?: number;
   private hostname?: string;
 
@@ -87,11 +87,15 @@ class NestOakInstance extends EventEmitter
     }
     this.application.use(this.router.routes());
     this.application.use(this.router.allowedMethods());
+    const securityOptions = this.#httpOptions
+      ? { secure: true as const, cert: this.#httpOptions.cert, key: this.#httpOptions.key }
+      : { secure: false as const };
+    this.#httpOptions?.cert
     this.application.listen({
       port,
       hostname,
-      secure: this.secure,
       signal: abortController.signal,
+      ...securityOptions
     });
   }
 
@@ -99,8 +103,9 @@ class NestOakInstance extends EventEmitter
     this.abortController?.abort();
   }
 
+  #httpOptions?: HttpsOptions;
   initHttpServer(options: NestApplicationOptions): void {
-    this.secure = options.httpsOptions ? true : false;
+    this.#httpOptions = options.httpsOptions;
   }
 
   use(handler: OakRequestHandler | OakErrorHandler): void;
