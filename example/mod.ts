@@ -16,6 +16,7 @@ import {
   Delete,
   Get,
   Head,
+  Header,
   HttpCode,
   HttpException,
   Inject,
@@ -101,7 +102,11 @@ class ApiController {
   }
 
   @Get("/greet")
-  greet(@Req() request: Request, @Res() response: Response): void {
+  @Header("Cache-Control", "no-cache")
+  greet(
+    @Req() request: Request,
+    @Res() response: Response,
+  ): void {
     assert.equal(request.url.pathname, "/api/greet");
     assert.ok(response.writable);
     response.body = "Hello Deno!";
