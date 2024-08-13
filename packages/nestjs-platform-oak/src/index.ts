@@ -457,6 +457,10 @@ export class OakAdapter extends AbstractHttpAdapter {
     return !response.writable;
   }
 
+  override setHeader(response: OakResponse, name: string, value: string): void {
+    return response.headers.set(name, value);
+  }
+
   override reply(
     response: OakResponse,
     body: unknown,

@@ -9,6 +9,7 @@ Deno.test("e2e", async (t) => {
     assert.equal(await res.text(), "Hello Deno!");
     assert.equal(res.status, 200);
     assert.equal(res.headers.get("x-foo"), "bar");
+    assert.equal(res.headers.get("cache-control"), "no-cache");
   });
 
   await t.step("/api/healthcheck", async () => {
