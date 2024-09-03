@@ -247,7 +247,7 @@ class NestOakInstance extends EventEmitter
 
   useErrorHandler(handler: OakErrorHandler): void {
     this.application.addEventListener("error", (e) => {
-      handler(e.error, e.context?.request, e.context?.response, () => { });
+      handler(e.error, e.context?.request, e.context?.response, () => {});
     });
   }
 
