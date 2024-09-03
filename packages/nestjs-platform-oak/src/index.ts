@@ -1,8 +1,4 @@
-import type {
-  HttpServer,
-  NestApplicationOptions,
-  RequestMethod,
-} from "@nestjs/common";
+import type { NestApplicationOptions, RequestMethod } from "@nestjs/common";
 import { HttpException, Logger } from "@nestjs/common";
 import type {
   ErrorHandler as _ErrorHandler,
@@ -30,13 +26,6 @@ interface OakAdapterOptions {
   logger?: Logger;
 }
 
-/**
- * @see {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/nest-application.ts#L304-L324}
- */
-interface NestHttpServerBridge extends EventEmitter {
-  address(): Record<string, unknown>;
-}
-
 type OakRequestHandler = _RequestHandler<OakRequest, OakResponse>;
 type OakErrorHandler = _ErrorHandler<OakRequest, OakResponse>;
 type OakRouterMiddleware = _OakRouterMiddleware<string>;
@@ -52,8 +41,16 @@ class NotImplementedError extends Error {
   }
 }
 
-class NestOakInstance extends EventEmitter
-  implements NestHttpServerBridge, Omit<HttpServer, "listen"> {
+class ImplementationError extends Error {
+  constructor(message?: string) {
+    super(`[BUG] ${message}`);
+  }
+}
+
+/**
+ * @see {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/nest-application.ts#L304-L324}
+ */
+class NestOakInstance extends EventEmitter {
   private abortController?: AbortController;
   private port?: number;
   private hostname?: string;
@@ -247,6 +244,11 @@ class NestOakInstance extends EventEmitter
 
   useErrorHandler(handler: OakErrorHandler): void {
     this.application.addEventListener("error", (e) => {
+      if (e.context?.request == null) {
+        throw new ImplementationError(
+          "ApplicationErrorEvent.context.request is not defined",
+        );
+      }
       handler(e.error, e.context?.request, e.context?.response, () => {});
     });
   }
