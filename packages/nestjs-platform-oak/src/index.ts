@@ -461,6 +461,18 @@ export class OakAdapter extends AbstractHttpAdapter {
     return response.headers.set(name, value);
   }
 
+  override appendHeader(
+    response: OakResponse,
+    name: string,
+    value: string,
+  ): void {
+    return response.headers.append(name, value);
+  }
+
+  override getHeader(response: OakResponse, name: string) {
+    return response.headers.get(name);
+  }
+
   override reply(
     response: OakResponse,
     body: unknown,
