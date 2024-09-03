@@ -247,7 +247,7 @@ class NestOakInstance extends EventEmitter
 
   useErrorHandler(handler: OakErrorHandler): void {
     this.application.addEventListener("error", (e) => {
-      handler(e.error, e.context?.request, e.context?.response, () => {});
+      handler(e.error, e.context?.request, e.context?.response, () => { });
     });
   }
 
@@ -441,6 +441,10 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
+  override getType(): string {
+    return "@oak/oak";
+  }
+
   override getRequestMethod(request: OakRequest): Lowercase<Request["method"]> {
     return toLowerCase(request.method);
   }
@@ -486,6 +490,10 @@ export class OakAdapter extends AbstractHttpAdapter {
     }
   }
 
+  override end(response: OakResponse, message?: string): void {
+    response.body = message;
+  }
+
   override status(response: OakResponse, statusCode: number): void {
     response.status = statusCode;
   }
@@ -493,6 +501,16 @@ export class OakAdapter extends AbstractHttpAdapter {
   override redirect(response: OakResponse, statusCode: number, url: string) {
     response.status = statusCode;
     response.redirect(url);
+  }
+
+  override render(
+    _response: OakResponse,
+    _view: string,
+    _options: unknown,
+  ): void {
+    throw new NotImplementedError(
+      "OakAdapter#render is not supported yet",
+    );
   }
 
   #getInstance(): NestOakInstance | undefined {
