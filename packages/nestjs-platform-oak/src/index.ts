@@ -540,3 +540,5 @@ function toLowerCase<T extends string>(s: T): Lowercase<T> {
   // @ts-expect-error `.toLowerCase()` returns a string converted to lower case
   return s.toLowerCase();
 }
+
+export { JsonBody } from "./decorators.ts";

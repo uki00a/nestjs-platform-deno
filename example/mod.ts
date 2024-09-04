@@ -1,4 +1,4 @@
-import { OakAdapter } from "@uki00a/nestjs-platform-oak";
+import { JsonBody, OakAdapter } from "@uki00a/nestjs-platform-oak";
 import { NestFactory } from "@nestjs/core";
 import type {
   ArgumentsHost,
@@ -162,6 +162,12 @@ class ApiController {
   @HttpCode(204)
   deleteTag(@Param("id") id: string): Promise<void> {
     return this.#tagService.delete(id);
+  }
+
+  @Post("/json_body")
+  @HttpCode(200)
+  jsonBody(@JsonBody() body: unknown): unknown {
+    return body;
   }
 
   @All("/healthcheck")
