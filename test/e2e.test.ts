@@ -12,6 +12,24 @@ Deno.test("e2e", async (t) => {
     assert.equal(res.headers.get("cache-control"), "no-cache");
   });
 
+  await t.step("`POST /api/json_body`", async () => {
+    const body = {
+      n: 123,
+      nested: {
+        s: "foo",
+      },
+    };
+    const res = await fetch("http://localhost:3000/api/json_body", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    assert.deepEqual(await res.json(), body);
+    assert.equal(res.status, 200);
+  });
+
   await t.step("/api/healthcheck", async () => {
     {
       const res = await fetch("http://localhost:3000/api/healthcheck");
