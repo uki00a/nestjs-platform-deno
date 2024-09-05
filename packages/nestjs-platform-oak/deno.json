@@ -1,6 +1,6 @@
 {
   "name": "@uki00a/nestjs-platform-oak",
-  "versionr": "0.1.0",
+  "version": "0.1.0",
   "exports": {
     ".": "./src/index.ts"
   }
