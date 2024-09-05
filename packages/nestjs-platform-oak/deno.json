@@ -1,0 +1,6 @@
+{
+  "name": "@uki00a/nestjs-platform-oak",
+  "exports": {
+    "./": "./src/index.ts"
+  }
+}
