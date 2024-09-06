@@ -170,6 +170,12 @@ class ApiController {
     return body;
   }
 
+  @Post("/json_body_with_key")
+  @HttpCode(200)
+  jsonBodyWithKey(@JsonBody("nested") nested: unknown): unknown {
+    return nested;
+  }
+
   @All("/healthcheck")
   healthcheck(): boolean {
     return true;
