@@ -30,6 +30,24 @@ Deno.test("e2e", async (t) => {
     assert.equal(res.status, 200);
   });
 
+  await t.step("`POST /api/json_body_with_key`", async () => {
+    const body = {
+      n: 123,
+      nested: {
+        s: "foo",
+      },
+    };
+    const res = await fetch("http://localhost:3000/api/json_body_with_key", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    assert.deepEqual(await res.json(), body.nested);
+    assert.equal(res.status, 200);
+  });
+
   await t.step("/api/healthcheck", async () => {
     {
       const res = await fetch("http://localhost:3000/api/healthcheck");
