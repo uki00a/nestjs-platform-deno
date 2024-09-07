@@ -1,5 +1,13 @@
 # nestjs-platform-oak
 
+NestJS HTTP adapter for [Oak](https://github.com/oakserver/oak).
+
+## Installation
+
+```shell
+$ deno add @uki00a/nestjs-platform-oak @oak/oak npm:@nestjs/common npm:@nestjs/core
+```
+
 ## Usage
 
 ```typescript
