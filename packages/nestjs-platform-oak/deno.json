@@ -2,7 +2,7 @@
   "name": "@uki00a/nestjs-platform-oak",
   "version": "0.1.0",
   "imports": {
-    "@/app.module.ts": "../example/mod.ts"
+    "@/app.module.ts": "../../example/mod.ts"
   },
   "exports": {
     ".": "./src/index.ts"
