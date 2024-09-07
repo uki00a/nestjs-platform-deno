@@ -14,7 +14,8 @@
   "imports": {
     "@nestjs/common": "npm:@nestjs/common@^10.3.9",
     "@nestjs/core": "npm:@nestjs/core@^10.3.9",
-    "@oak/oak": "jsr:@oak/oak@^16.1.0"
+    "@oak/oak": "jsr:@oak/oak@^16.1.0",
+    "$/app.module.ts": "../example/mod.ts"
   },
   "lint": {
     "rules": {
