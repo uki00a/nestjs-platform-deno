@@ -14,7 +14,7 @@ $ deno add @uki00a/nestjs-platform-oak @oak/oak npm:@nestjs/common npm:@nestjs/c
 import { NestFactory } from "@nestjs/core";
 import { Application } from "@oak/oak";
 import { OakAdapter } from "@uki00a/nestjs-platform-oak";
-import AppModule from "@/app.module.ts";
+import { AppModule } from "@/app.module.ts";
 
 const app = await NestFactory.create(
   AppModule,
