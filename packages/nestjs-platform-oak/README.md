@@ -31,7 +31,7 @@ If you specify `key` parameter to the `@Body()` decorator as shown below, it
 will not work as intended:
 
 ```typescript
-import { Body, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import type { Request } from "@oak/oak";
 
 @Controller("/tags")
@@ -47,7 +47,7 @@ This is because Oak's `Request.body` is not a plain object. In this case you
 should use `@JsonBody()` decorator instead:
 
 ```typescript
-import { Post } from "@nestjs/common";
+import { Controller, Post } from "@nestjs/common";
 import { JsonBody } from "@uki00a/nestjs-platform-oak";
 import type { Request } from "@oak/oak";
 
