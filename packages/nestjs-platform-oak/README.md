@@ -6,7 +6,7 @@
 import { NestFactory } from "@nestjs/core";
 import { Application } from "@oak/oak";
 import { OakAdapter } from "@uki00a/nestjs-platform-oak";
-import AppModule from "$/app.module.ts";
+import AppModule from "@/app.module.ts";
 
 const app = await NestFactory.create(
   AppModule,
@@ -19,7 +19,8 @@ await app.listen(3000);
 
 ### `@Body()` decorator with `key` parameter does not work
 
-If you specify `key` parameter to the `@Body()` decorator as shown below, it will not work as intended:
+If you specify `key` parameter to the `@Body()` decorator as shown below, it
+will not work as intended:
 
 ```typescript
 import { Body, Post } from "@nestjs/common";
@@ -34,7 +35,8 @@ export class TagsController {
 }
 ```
 
-This is because Oak's `Request.body` is not a plain object. In this case you should use `@JsonBody()` decorator instead:
+This is because Oak's `Request.body` is not a plain object. In this case you
+should use `@JsonBody()` decorator instead:
 
 ```typescript
 import { Post } from "@nestjs/common";

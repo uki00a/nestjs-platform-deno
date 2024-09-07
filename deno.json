@@ -6,7 +6,7 @@
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts'",
     "test": "deno test --allow-net --no-check ./test",
-    "test:ci": "deno test --allow-net --frozen-lockfile ./test"
+    "test:ci": "deno test --doc --allow-net --frozen-lockfile ./test"
   },
   "workspace": {
     "members": ["./packages/nestjs-platform-oak"]
@@ -14,8 +14,7 @@
   "imports": {
     "@nestjs/common": "npm:@nestjs/common@^10.3.9",
     "@nestjs/core": "npm:@nestjs/core@^10.3.9",
-    "@oak/oak": "jsr:@oak/oak@^16.1.0",
-    "$/app.module.ts": "../example/mod.ts"
+    "@oak/oak": "jsr:@oak/oak@^16.1.0"
   },
   "lint": {
     "rules": {
