@@ -33,6 +33,7 @@ import {
   Res,
   UseFilters,
 } from "@nestjs/common";
+import { Application } from "@oak/oak";
 import type { Request, Response } from "@oak/oak";
 import assert from "node:assert/strict";
 
@@ -223,7 +224,7 @@ class SampleMiddleware implements NestMiddleware {
     ApiController,
   ],
 })
-class AppModule implements NestModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(SampleMiddleware)
@@ -234,7 +235,7 @@ class AppModule implements NestModule {
 export async function createNestApp(): Promise<INestApplication> {
   const app = await NestFactory.create(
     AppModule,
-    OakAdapter.create(),
+    OakAdapter.create(new Application()),
   );
   return app;
 }
