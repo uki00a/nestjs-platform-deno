@@ -5,4 +5,6 @@ This repository provides packages for building a
 
 ## Packages
 
-- [nestjs-platform-oak](./packages/nestjs-platform-oak/README.md)
+|                             Package                             |                                                      Link                                                      |
+| :-------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
+| [nestjs-platform-oak](./packages/nestjs-platform-oak/README.md) | [![JSR](https://jsr.io/badges/@uki00a/nestjs-platform-oak)](https://jsr.io/badges/@uki00a/nestjs-platform-oak) |
