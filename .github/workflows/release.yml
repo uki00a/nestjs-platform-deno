@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get deno version
+        id: deno-version
+        run: |
+          echo "version=$(cat .deno-version)" >> ${GITHUB_OUTPUT}
+      - name: Set up Deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: ${{ steps.deno-version.outputs.version }}
+      - name: publish packages
+        run:
+          deno publish
