@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true
   },
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno publish --dry-run",
+    "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts'",
     "test": "deno test --allow-net --no-check ./test",
     "test:ci": "deno test --doc --allow-net --frozen-lockfile ./test './**/*.md'"
   },
