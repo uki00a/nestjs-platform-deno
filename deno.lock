@@ -16,6 +16,7 @@
       "jsr:@std/path@^1.0": "jsr:@std/path@1.0.4",
       "npm:@nestjs/common@^10.4.1": "npm:@nestjs/common@10.4.1_reflect-metadata@0.2.2_rxjs@7.8.1",
       "npm:@nestjs/core@^10.4.1": "npm:@nestjs/core@10.4.1_@nestjs+common@10.4.1__reflect-metadata@0.2.2__rxjs@7.8.1_reflect-metadata@0.2.2_rxjs@7.8.1",
+      "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
     "jsr": {
@@ -111,6 +112,10 @@
           "consola": "consola@2.15.3",
           "node-fetch": "node-fetch@2.7.0"
         }
+      },
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
       },
       "ansi-styles@4.3.0": {
         "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==",
