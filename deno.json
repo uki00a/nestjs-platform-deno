@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true
   },
   "tasks": {
-    "upgrade-deps": "rm deno.lock && deno cache 'packages/*/mod.ts' test example",
+    "upgrade-deps": "rm deno.lock && deno cache 'packages/*/index.ts' test example",
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts'",
     "test": "deno test --allow-net --no-check ./test",
     "test:ci": "deno test --doc --allow-net --frozen-lockfile ./test './**/*.md'"
