@@ -1,4 +1,5 @@
 import { JsonBody, OakAdapter } from "@uki00a/nestjs-platform-oak";
+import { DenoKvModule, InjectKv } from "@uki00a/nestjs-denokv";
 import { NestFactory } from "@nestjs/core";
 import type {
   ArgumentsHost,
@@ -58,29 +59,43 @@ interface TagService {
 }
 
 @Injectable()
-class InMemoryTagService implements TagService {
-  readonly #tagByID: Record<TagID, Tag> = {};
-  add(name: string): Promise<Tag> {
+class TagService implements TagService {
+  readonly #kv: Deno.Kv;
+  constructor(@InjectKv() kv: Deno.Kv) {
+    this.#kv = kv;
+  }
+
+  async add(name: string): Promise<Tag> {
     const id = crypto.randomUUID();
     const tag: Tag = { id, name };
-    this.#tagByID[id] = tag;
+    await this.#kv.set(["tags", id], tag);
     return Promise.resolve({ ...tag });
   }
 
-  find(id: string): Promise<Tag> {
-    return Promise.resolve(this.#tagByID[id]);
+  async find(id: string): Promise<Tag> {
+    const found = await this.#kv.get<Tag>(["tags", id], {
+      consistency: "strong",
+    });
+    if (found.value == null) {
+      throw new HttpException("NotFound", 404);
+    }
+    return found.value;
   }
 
-  delete(id: string): Promise<void> {
-    delete this.#tagByID[id];
-    return Promise.resolve();
+  async delete(id: string): Promise<void> {
+    await this.#kv.delete(["tags", id]);
   }
 
-  update(command: UpdateTagComment): Promise<Tag> {
+  async update(command: UpdateTagComment): Promise<Tag> {
     const { id, ...rest } = command;
-    const tag = this.#tagByID[id];
-    const newTag = { ...tag, ...rest };
-    this.#tagByID[id] = newTag;
+    const found = await this.#kv.get<Tag>(["tags", id], {
+      consistency: "strong",
+    });
+    if (found.value == null) {
+      throw new HttpException("NotFound", 404);
+    }
+    const newTag = { ...found.value, ...rest };
+    await this.#kv.set(["tags", id], newTag);
     return Promise.resolve({ ...newTag });
   }
 }
@@ -217,8 +232,11 @@ class SampleMiddleware implements NestMiddleware {
   providers: [
     {
       provide: kTagService,
-      useValue: new InMemoryTagService(),
+      useClass: TagService,
     },
+  ],
+  imports: [
+    DenoKvModule.register(":memory:"),
   ],
   controllers: [
     ApiController,

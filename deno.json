@@ -11,6 +11,7 @@
   },
   "workspace": {
     "members": [
+      "./packages/nestjs-denokv",
       "./packages/nestjs-platform-oak"
     ]
   },
@@ -25,5 +26,6 @@
         "no-console"
       ]
     }
-  }
+  },
+  "unstable": ["kv"]
 }
