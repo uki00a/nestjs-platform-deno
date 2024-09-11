@@ -28,7 +28,7 @@ export class AppModule {
 You can inject `Deno.Kv` as follows:
 
 ```typescript
-import { DenoKvModule } from "@uki00a/nestjs-denokv";
+import { InjectKv } from "@uki00a/nestjs-denokv";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

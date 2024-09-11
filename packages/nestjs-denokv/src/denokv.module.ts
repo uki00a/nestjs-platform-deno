@@ -29,7 +29,7 @@ export class DenoKvModule implements OnModuleDestroy {
     };
   }
 
-  onModuleDestroy() {
+  onModuleDestroy(): void {
     return this.#kv.close();
   }
 }
