@@ -1,4 +1,4 @@
-import { createNestApp } from "../example/mod.ts";
+import { createNestApp } from "./app/mod.ts";
 import assert from "node:assert/strict";
 
 Deno.test("e2e", async (t) => {
