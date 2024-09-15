@@ -2,7 +2,7 @@ import type { DynamicModule, OnModuleDestroy } from "@nestjs/common";
 import { Module } from "@nestjs/common";
 // TODO: add support for Deno Queue using `DiscoveryModule`
 // import { DiscoveryModule, DiscoveryService } from "@nestjs/core";
-import { kDenoKv } from "./denokv.constants.ts";
+import { DenoKvRef } from "./denokv.constants.ts";
 import { InjectKv } from "./denokv.decorator.ts";
 
 /**
@@ -24,7 +24,13 @@ export interface DenoKvModuleOptions {
 
 // TODO: implement `DenoKvModule.registerAsync()`
 @Module({
-  exports: [kDenoKv],
+  exports: [DenoKvRef],
+  providers: [
+    {
+      provide: DenoKvRef,
+      useFactory: () => Deno.openKv(),
+    },
+  ],
 })
 export class DenoKvModule implements OnModuleDestroy {
   readonly #kv: Deno.Kv;
@@ -44,7 +50,7 @@ export class DenoKvModule implements OnModuleDestroy {
       module: DenoKvModule,
       providers: [
         {
-          provide: kDenoKv,
+          provide: DenoKvRef,
           useFactory: () => {
             return Deno.openKv(path);
           },

@@ -1,1 +1,1 @@
-export const kDenoKv = Symbol("nestjs-denokv.DenoKv");
+export const DenoKvRef = Symbol("nestjs-denokv.DenoKv");

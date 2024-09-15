@@ -18,7 +18,7 @@ import { Module } from "@nestjs/common";
 
 @Module({
   imports: [
-    DenoKvModule.register(),
+    DenoKvModule,
   ],
 })
 export class AppModule {
