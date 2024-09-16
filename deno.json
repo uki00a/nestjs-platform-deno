@@ -27,5 +27,5 @@
       ]
     }
   },
-  "unstable": ["kv"]
+  "unstable": ["kv", "fmt-yaml"]
 }
