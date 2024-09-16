@@ -48,7 +48,7 @@ export class DenoKvModule implements OnModuleDestroy {
    */
   static register(path: string): DynamicModule;
   /**
-   * @see {@linkcode DenoKvModuleOptions}
+   * Customize the behavior of {@linkcode DenoKvModule} based on {@linkcode DenoKvModuleOptions}.
    */
   static register(options: DenoKvModuleOptions): DynamicModule;
   /**
