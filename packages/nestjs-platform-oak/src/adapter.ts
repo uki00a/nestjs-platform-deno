@@ -276,6 +276,9 @@ interface VersionedRoute {
 }
 
 const kParams = "params";
+/**
+ * NestJS HTTP adapter for [Oak](https://github.com/oakserver/oak).
+ */
 export class OakAdapter extends AbstractHttpAdapter {
   private constructor(instance: Application, {
     logger = new Logger("platform-oak"),
@@ -283,23 +286,30 @@ export class OakAdapter extends AbstractHttpAdapter {
     super(new NestOakInstance(instance, new Router(), logger));
   }
 
+  /**
+   * Creates an instance of {@linkcode OakAdapter}.
+   */
   static create(application?: Application): OakAdapter {
     return new OakAdapter(application ?? new Application());
   }
 
+  /** @internal */
   override close(): void {
     return this.getInstance()?.close();
   }
 
+  /** @internal */
   override listen(
     port: string | number,
     callback?: (() => void) | undefined,
   ): void;
+  /** @internal */
   override listen(
     port: string | number,
     hostname: string,
     callback?: (() => void) | undefined,
   ): void;
+  /** @internal */
   override listen(
     port: string | number,
     hostnameOrCallback?: string | (() => void),
@@ -318,12 +328,14 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
+  /** @internal */
   override initHttpServer(options: NestApplicationOptions): void {
     const instance = this.#getInstance();
     instance?.initHttpServer(options);
     this.httpServer = instance;
   }
 
+  /** @internal */
   override registerParserMiddleware(
     prefix?: string | undefined,
     _rawBody?: boolean | undefined,
@@ -340,6 +352,7 @@ export class OakAdapter extends AbstractHttpAdapter {
     });
   }
 
+  /** @internal */
   override createMiddlewareFactory(
     _requestMethod: RequestMethod,
   ): MiddlewareFactory | Promise<MiddlewareFactory> {
@@ -360,6 +373,7 @@ export class OakAdapter extends AbstractHttpAdapter {
     return middlewareFactory;
   }
 
+  /** @internal */
   override setErrorHandler(
     handler: OakErrorHandler,
     prefix?: string,
@@ -377,6 +391,7 @@ export class OakAdapter extends AbstractHttpAdapter {
     this.#getInstance()?.useErrorHandler(handler);
   }
 
+  /** @internal */
   override setNotFoundHandler(
     handler: OakRequestHandler,
     prefix?: string,
@@ -411,18 +426,21 @@ export class OakAdapter extends AbstractHttpAdapter {
     }
   }
 
+  /** @internal */
   override setViewEngine(_engine: string): void {
     throw new NotImplementedError(
       "OakAdapter#setViewEngine is not supported yet",
     );
   }
 
+  /** @internal */
   override useStaticAssets(..._args: unknown[]): void {
     throw new NotImplementedError(
       "OakAdapter#useStaticAssets is not supported yet",
     );
   }
 
+  /** @internal */
   override enableCors(
     _options: CorsOptions | CorsOptionsDelegate<OakRequest>,
     _prefix?: string,
@@ -432,6 +450,7 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
+  /** @internal */
   override applyVersionFilter(
     // deno-lint-ignore ban-types
     _handler: Function,
@@ -443,30 +462,37 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
+  /** @internal */
   override getType(): string {
     return "@oak/oak";
   }
 
+  /** @internal */
   override getRequestMethod(request: OakRequest): Lowercase<Request["method"]> {
     return toLowerCase(request.method);
   }
 
+  /** @internal */
   override getRequestUrl(request: OakRequest): string {
     return request.url.pathname;
   }
 
+  /** @internal */
   override getRequestHostname(request: OakRequest): string {
     return request.url.hostname;
   }
 
+  /** @internal */
   override isHeadersSent(response: OakResponse): boolean {
     return !response.writable;
   }
 
+  /** @internal */
   override setHeader(response: OakResponse, name: string, value: string): void {
     return response.headers.set(name, value);
   }
 
+  /** @internal */
   override appendHeader(
     response: OakResponse,
     name: string,
@@ -475,10 +501,12 @@ export class OakAdapter extends AbstractHttpAdapter {
     return response.headers.append(name, value);
   }
 
+  /** @internal */
   override getHeader(response: OakResponse, name: string): string | null {
     return response.headers.get(name);
   }
 
+  /** @internal */
   override reply(
     response: OakResponse,
     body: unknown,
@@ -492,19 +520,23 @@ export class OakAdapter extends AbstractHttpAdapter {
     }
   }
 
+  /** @internal */
   override end(response: OakResponse, message?: string): void {
     response.body = message;
   }
 
+  /** @internal */
   override status(response: OakResponse, statusCode: number): void {
     response.status = statusCode;
   }
 
+  /** @internal */
   override redirect(response: OakResponse, statusCode: number, url: string) {
     response.status = statusCode;
     response.redirect(url);
   }
 
+  /** @internal */
   override render(
     _response: OakResponse,
     _view: string,
