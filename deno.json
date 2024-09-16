@@ -5,7 +5,7 @@
   },
   "tasks": {
     "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test example npm:@types/node",
-    "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts'",
+    "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno doc --lint 'packages/**/*.ts'",
     "test": "deno test --allow-net --no-check ./test",
     "test:ci": "deno test --doc --allow-net --frozen-lockfile ./test './**/*.md'"
   },
