@@ -61,7 +61,7 @@ async function main() {
   );
   await Deno.writeTextFile(
     pathToCliffConfig,
-    cliffConfigTemplate.replaceAll("$package", args.values.package),
+    cliffConfigTemplate.replaceAll("$PACKAGE", args.values.package),
   );
   try {
     // Ensure `packages/<package>/CHANGELOG.md`

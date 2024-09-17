@@ -8,13 +8,13 @@
 [changelog]
 # template for the changelog header
 header = """
-# $package\n
+# $PACKAGE\n
 """
 # template for the changelog body
 # https://keats.github.io/tera/docs/#introduction
 body = """
 {% if version %}\
-    ## `{{ version | trim_start_matches(pat="$package@") | trim_start_matches(pat="v") }}` ({{ timestamp | date(format="%Y-%m-%d") }})
+    ## `{{ version | trim_start_matches(pat="$PACKAGE@") | trim_start_matches(pat="v") }}` ({{ timestamp | date(format="%Y-%m-%d") }})
 {% else %}\
     ## [unreleased]
 {% endif %}\
@@ -47,7 +47,7 @@ split_commits = false
 # regex for preprocessing the commit messages
 commit_preprocessors = [
   # Replace issue numbers
-  #{ pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](<REPO>/issues/${2}))"},
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/uki00a/nestjs-platform-deno/pull/${2}))"},
   # Check spelling of the commit with https://github.com/crate-ci/typos
   # If the spelling is incorrect, it will be automatically fixed.
   #{ pattern = '.*', replace_command = 'typos --write-changes -' },
@@ -55,13 +55,13 @@ commit_preprocessors = [
 # regex for parsing and grouping commits
 commit_parsers = [
   { message = "^feat:", group = "<!-- 0 -->🚀 Features" },
-  { message = "^feat($package):", group = "<!-- 0 -->🚀 Features" },
+  { message = "^feat($PACKAGE):", group = "<!-- 0 -->🚀 Features" },
   { message = "^fix:", group = "<!-- 1 -->🐛 Bug Fixes" },
-  { message = "^fix($package):", group = "<!-- 1 -->🐛 Bug Fixes" },
+  { message = "^fix($PACKAGE):", group = "<!-- 1 -->🐛 Bug Fixes" },
   { message = "^perf:", group = "<!-- 2 -->⚡ Performance" },
-  { message = "^perf($package)", group = "<!-- 2 -->⚡ Performance" },
+  { message = "^perf($PACKAGE)", group = "<!-- 2 -->⚡ Performance" },
   { message = "^deps:", group = "<!-- 3 -->🤖 Dependencies" },
-  { message = "^deps($package)", group = "<!-- 3 -->🤖 Dependencies" }
+  { message = "^deps($PACKAGE)", group = "<!-- 3 -->🤖 Dependencies" }
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = true
