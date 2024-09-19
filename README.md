@@ -8,4 +8,4 @@ This repository provides packages for building a
 |                             Package                             |                                                  Link                                                   |
 | :-------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: |
 | [nestjs-platform-oak](./packages/nestjs-platform-oak/README.md) | [![JSR](https://jsr.io/badges/@uki00a/nestjs-platform-oak)](https://jsr.io/@uki00a/nestjs-platform-oak) |
-|       [nestjs-denokv](./packages/nestjs-denokv/README.md)       |                                                  TODO                                                   |
+|       [nestjs-denokv](./packages/nestjs-denokv/README.md)       |       [![JSR](https://jsr.io/badges/@uki00a/nestjs-denokv)](https://jsr.io/@uki00a/nestjs-denokv)       |
