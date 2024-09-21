@@ -2,6 +2,7 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "jsr:@hono/hono@^4": "jsr:@hono/hono@4.6.2",
       "jsr:@oak/commons@^1.0": "jsr:@oak/commons@1.0.0",
       "jsr:@oak/oak@^17": "jsr:@oak/oak@17.0.0",
       "jsr:@std/assert@^1.0": "jsr:@std/assert@1.0.4",
@@ -20,6 +21,9 @@
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
     "jsr": {
+      "@hono/hono@4.6.2": {
+        "integrity": "35fcf3be4687825080b01bed7bbe2ac66f8d8b8939f0bad459661bf3b46d916f"
+      },
       "@oak/commons@1.0.0": {
         "integrity": "49805b55603c3627a9d6235c0655aa2b6222d3036b3a13ff0380c16368f607ac",
         "dependencies": [
@@ -216,6 +220,7 @@
   "remote": {},
   "workspace": {
     "dependencies": [
+      "jsr:@hono/hono@^4",
       "jsr:@oak/oak@^17",
       "npm:@nestjs/common@^10",
       "npm:@nestjs/core@^10"
