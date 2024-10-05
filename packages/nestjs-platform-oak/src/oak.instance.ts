@@ -16,7 +16,9 @@ import { EventEmitter } from "node:events";
 import { ImplementationError, NotImplementedError } from "./errors.ts";
 
 type OakRouterMiddleware = _OakRouterMiddleware<string>;
+/** @internal */
 export type OakRequestHandler = _RequestHandler<OakRequest, OakResponse>;
+/** @internal */
 export type OakErrorHandler = _ErrorHandler<OakRequest, OakResponse>;
 
 /**
