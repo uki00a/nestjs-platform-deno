@@ -13,13 +13,15 @@
   "workspace": {
     "members": [
       "./packages/nestjs-denokv",
+      "./packages/nestjs-platform-hono",
       "./packages/nestjs-platform-oak"
     ]
   },
   "imports": {
     "@nestjs/common": "npm:@nestjs/common@^10",
     "@nestjs/core": "npm:@nestjs/core@^10",
-    "@oak/oak": "jsr:@oak/oak@^17"
+    "@oak/oak": "jsr:@oak/oak@^17",
+    "@hono/hono": "jsr:@hono/hono@^4"
   },
   "lint": {
     "rules": {

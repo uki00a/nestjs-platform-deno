@@ -8,6 +8,7 @@ async function main() {
   const cliffConfigsDir = join(tmpDir, "cliff");
   const allowedPackages = [
     "nestjs-denokv",
+    "nestjs-platform-hono",
     "nestjs-platform-oak",
   ];
   const args = parseArgs({
