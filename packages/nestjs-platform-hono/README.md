@@ -19,7 +19,7 @@ const app = await NestFactory.create(
   AppModule,
   HonoAdapter.create(),
 );
-await app.listen();
+await app.listen(8000);
 ```
 
 ## Limitations
