@@ -77,20 +77,25 @@ async function main() {
   const decoder = new TextDecoder();
   {
     // Update `packages/<package>/CHANGELOG.md`
-    const commitRange = `${args.values.package}@${
+    const previousTag = `${args.values.package}@${
       args.values["current-version"]
-    }..HEAD`;
+    }`;
+    const commitRange = `${previousTag}..HEAD`;
     const newTag = `${args.values.package}@${args.values["new-version"]}`;
+    const cliffArgs = [
+      "--verbose",
+      "--unreleased",
+      "--prepend",
+      pathToChangeLog,
+      "--config",
+      pathToCliffConfig,
+      `--tag`,
+      newTag,
+      commitRange,
+    ];
     const cliffOutput = await new Deno.Command("git-cliff", {
-      args: [
-        "--prepend",
-        pathToChangeLog,
-        "--config",
-        pathToCliffConfig,
-        `--tag`,
-        newTag,
-        commitRange,
-      ],
+      args: cliffArgs,
+      stdout: "inherit",
     }).output();
     if (!cliffOutput.success) {
       throw new Error(decoder.decode(cliffOutput.stderr));
