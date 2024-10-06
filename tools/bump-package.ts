@@ -22,10 +22,6 @@ async function main() {
       "new-version": {
         type: "string",
       },
-      "previous-tag": {
-        // optional
-        type: "string",
-      },
     },
   });
 
@@ -81,8 +77,9 @@ async function main() {
   const decoder = new TextDecoder();
   {
     // Update `packages/<package>/CHANGELOG.md`
-    const previousTag = args.values["previous-tag"] ||
-      `${args.values.package}@${args.values["current-version"]}`;
+    const previousTag = `${args.values.package}@${
+      args.values["current-version"]
+    }`;
     const commitRange = `${previousTag}..HEAD`;
     const newTag = `${args.values.package}@${args.values["new-version"]}`;
     const cliffArgs = [
