@@ -47,7 +47,7 @@ export class OakAdapter extends AbstractHttpAdapter {
   /**
    * Creates an instance of {@linkcode OakAdapter}.
    */
-  static create(application?: Application): OakAdapter {
+  static create(application?: Application): AbstractHttpAdapter {
     return new OakAdapter(application ?? new Application());
   }
 
