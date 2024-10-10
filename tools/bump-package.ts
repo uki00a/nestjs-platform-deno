@@ -7,6 +7,7 @@ async function main() {
   const tmpDir = join(rootDir, "tmp");
   const cliffConfigsDir = join(tmpDir, "cliff");
   const allowedPackages = [
+    "create-nestjs",
     "nestjs-denokv",
     "nestjs-platform-hono",
     "nestjs-platform-oak",

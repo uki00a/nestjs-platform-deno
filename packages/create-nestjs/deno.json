@@ -1,0 +1,10 @@
+{
+  "name": "@uki00a/create-nestjs",
+  "version": "0.1.0",
+  "exports": {
+    ".": "./cli.ts"
+  },
+  "imports": {
+    "@david/dax": "jsr:@david/dax@0.42.0"
+  }
+}

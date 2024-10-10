@@ -224,6 +224,13 @@
       "jsr:@oak/oak@^17",
       "npm:@nestjs/common@^10",
       "npm:@nestjs/core@^10"
-    ]
+    ],
+    "members": {
+      "packages/create-nestjs": {
+        "dependencies": [
+          "jsr:@david/dax@0.42.0"
+        ]
+      }
+    }
   }
 }
