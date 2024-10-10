@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "imports": {
+    "@nestjs/common": "npm:@nestjs/common@^10",
+    "@nestjs/core": "npm:@nestjs/core@^10"
+  },
+  "lint": {
+    "rules": {
+      "include": [
+        "no-console"
+      ]
+    }
+  }
+}
