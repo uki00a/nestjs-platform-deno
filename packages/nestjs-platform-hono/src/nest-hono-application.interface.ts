@@ -8,7 +8,10 @@ import type { ServeStaticOptions } from "@hono/hono/serve-static";
 type HonoServeStaticOptions = ServeStaticOptions;
 
 /**
- * @example
+ * This type is returned by `NestFactory#create`.
+ *
+ * @example Usage:
+ *
  * ```typescript
  * import { NestFactory } from "@nestjs/core";
  * import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
@@ -20,7 +23,8 @@ type HonoServeStaticOptions = ServeStaticOptions;
  *   HonoAdapter.create(),
  * );
  * ```
- * {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/nest-application.ts}
+ *
+ * @see {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/nest-application.ts}
  */
 export interface NestHonoApplication<
   TServer = unknown,
