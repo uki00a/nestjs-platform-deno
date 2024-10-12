@@ -15,7 +15,7 @@ import { serveStatic } from "@hono/hono/deno";
 import type { ServeStaticOptions } from "@hono/hono/serve-static";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
-import { NotImplementedError } from "./errors.ts";
+import { ImplementationError, NotImplementedError } from "./errors.ts";
 
 type HonoStatusCode = Parameters<HonoContext["status"]>[0];
 
@@ -121,8 +121,33 @@ export class HonoAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override setNotFoundHandler(_handler: HonoRequestHandler, _prefix?: string) {
+  override setNotFoundHandler(handler: HonoRequestHandler, prefix?: string) {
     /* DO NOTHING */
+    if (prefix) {
+      throw new NotImplementedError(
+        "HonoAdapter#setNotFoundHandler: `prefix` parameter is not supported yet",
+      );
+    }
+    function notFoundHandler(c: HonoContext): Promise<Response> {
+      return new Promise((resolve, reject) => {
+        /**
+         * NOTE: NestJS does not call `next()`.
+         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/router-proxy.ts#L21}
+         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/routes-resolver.ts#L144-L149}
+         */
+        function next(): void {
+          reject(
+            new ImplementationError(
+              "HonoAdapter#setNotFoundHandler - `next()` should not be called",
+            ),
+          );
+        }
+        handler(c, c, next)
+          .then(() => resolve(c.res))
+          .catch(reject);
+      });
+    }
+    this.getInstance().notFound(notFoundHandler);
   }
 
   /** @internal */
@@ -222,7 +247,7 @@ export class HonoAdapter extends AbstractHttpAdapter {
     } else if (body === undefined) {
       c.res = c.newResponse(null);
     } else {
-      c.res = Response.json(body);
+      c.res = c.json(body);
     }
   }
 
