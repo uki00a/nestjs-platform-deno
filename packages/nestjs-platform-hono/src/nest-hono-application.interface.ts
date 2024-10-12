@@ -8,6 +8,18 @@ import type { ServeStaticOptions } from "@hono/hono/serve-static";
 type HonoServeStaticOptions = ServeStaticOptions;
 
 /**
+ * @example
+ * ```typescript
+ * import { NestFactory } from "@nestjs/core";
+ * import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
+ * import { HonoAdapter } from "@uki00a/nestjs-platform-hono";
+ * import { AppModule } from "@/app.module.ts";
+ * 
+ * const app = await NestFactory.create<NestHonoApplication>(
+ *   AppModule,
+ *   HonoAdapter.create(),
+ * );
+ * ```
  * {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/nest-application.ts}
  */
 export interface NestHonoApplication<
