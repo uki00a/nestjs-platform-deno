@@ -14,7 +14,7 @@ type HonoServeStaticOptions = ServeStaticOptions;
  * import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
  * import { HonoAdapter } from "@uki00a/nestjs-platform-hono";
  * import { AppModule } from "@/app.module.ts";
- * 
+ *
  * const app = await NestFactory.create<NestHonoApplication>(
  *   AppModule,
  *   HonoAdapter.create(),
