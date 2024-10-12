@@ -9,6 +9,7 @@ import type {
   Hono,
   MiddlewareHandler,
   Next as HonoNext,
+  NotFoundHandler,
 } from "@hono/hono";
 import { EventEmitter } from "node:events";
 
@@ -113,6 +114,11 @@ export class NestHonoInstance extends EventEmitter {
   /** @internal */
   useErrorHandler(handler: ErrorHandler): void {
     this.#hono.onError(handler);
+  }
+
+  /** @internal */
+  notFound(notFoundHandler: NotFoundHandler): void {
+    this.#hono.notFound(notFoundHandler);
   }
 
   /** @internal */
