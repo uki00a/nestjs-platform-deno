@@ -133,21 +133,8 @@ export class HonoAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override useStaticAssets(path: string, options?: ServeStaticOptions): void;
-  /** @internal */
-  override useStaticAssets(options: ServeStaticOptions): void;
-  /** @internal */
-  override useStaticAssets(
-    pathOrOptions: string | ServeStaticOptions,
-    maybeOptions?: ServeStaticOptions,
-  ): void {
-    if (typeof pathOrOptions === "string") {
-      const path = pathOrOptions;
-      this.getInstance().use(path, serveStatic(maybeOptions ?? {}));
-    } else {
-      const options = pathOrOptions;
-      this.getInstance().use(serveStatic(options));
-    }
+  override useStaticAssets(path: string, options?: ServeStaticOptions): void {
+    this.getInstance().use(path, serveStatic(options ?? {}));
   }
 
   /** @internal */

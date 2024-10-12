@@ -11,8 +11,4 @@ export interface NestHonoApplication<
    * Registers static assets under a {@linkcode path}.
    */
   useStaticAssets(path: string, options?: ServeStaticOptions): this;
-  /**
-   * Registers static asserts with {@linkcode ServeStaticOptions}.
-   */
-  useStaticAssets(options: ServeStaticOptions): this;
 }
