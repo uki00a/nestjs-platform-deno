@@ -1,3 +1,4 @@
+import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
 import { HonoAdapter, JsonBody } from "@uki00a/nestjs-platform-hono";
 import { DenoKvModule, InjectKv } from "@uki00a/nestjs-denokv";
 import { NestFactory } from "@nestjs/core";
@@ -257,9 +258,12 @@ export class AppModule implements NestModule {
 
 export async function createNestApp(): Promise<INestApplication> {
   const hono = new Hono();
-  const app = await NestFactory.create(
+  const app = await NestFactory.create<NestHonoApplication>(
     AppModule,
     HonoAdapter.create(hono),
   );
+  app.useStaticAssets("/README", {
+    path: "./packages/nestjs-platform-hono/README.md",
+  });
   return app;
 }

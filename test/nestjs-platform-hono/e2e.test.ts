@@ -137,5 +137,13 @@ Deno.test("e2e", async (t) => {
     assert.equal(await res.text(), "NG");
   });
 
+  await t.step("GET `/README`", async () => {
+    // Tests `HonoAdapter#useStaticAssets`
+    const res = await fetch(`http://localhost:${port}/README`);
+    assert.equal(res.status, 200);
+    const content = await res.text();
+    assert.match(content, /nestjs-platform-hono/);
+  });
+
   await app.close();
 });

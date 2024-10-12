@@ -12,10 +12,11 @@ $ deno add jsr:@uki00a/nestjs-platform-hono jsr:@hono/hono npm:@nestjs/common np
 
 ```typescript
 import { NestFactory } from "@nestjs/core";
+import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
 import { HonoAdapter } from "@uki00a/nestjs-platform-hono";
 import { AppModule } from "@/app.module.ts";
 
-const app = await NestFactory.create(
+const app = await NestFactory.create<NestHonoApplication>(
   AppModule,
   HonoAdapter.create(),
 );
