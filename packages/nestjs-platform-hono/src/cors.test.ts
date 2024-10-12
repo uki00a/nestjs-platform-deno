@@ -57,18 +57,21 @@ Deno.test({
       assert.deepEqual(actual, expected);
     });
 
-    await t.step("returns a function", () => {
-      const fn = toHonoOriginOption([
-        /test.com$/,
-        "https://example.net",
-      ]);
-      assert(typeof fn === "function", "A function should be returned");
-      // @ts-expect-error This is intended
-      const c: Context = {};
-      assert.equal(fn("http://test.com", c), "http://test.com");
-      assert.equal(fn("https://example.net", c), "https://example.net");
-      assert.equal(fn("https://foo.com", c), null);
-    });
+    await t.step(
+      "returns a function if a given array contains a RegExp object",
+      () => {
+        const fn = toHonoOriginOption([
+          /test.com$/,
+          "https://example.net",
+        ]);
+        assert(typeof fn === "function", "A function should be returned");
+        // @ts-expect-error This is intended
+        const c: Context = {};
+        assert.equal(fn("http://test.com", c), "http://test.com");
+        assert.equal(fn("https://example.net", c), "https://example.net");
+        assert.equal(fn("https://foo.com", c), null);
+      },
+    );
 
     await t.step(
       "returns a function that always returns `null` if `false` is given",
