@@ -6,8 +6,8 @@
   "tasks": {
     "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test example npm:@types/node",
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno doc --lint 'packages/**/*.ts'",
-    "test": "deno test --allow-net --no-check ./test",
-    "test:ci": "deno test --doc --allow-net --frozen-lockfile ./test './**/*.md'",
+    "test": "deno test --allow-net --allow-read=packages/ --no-check ./test",
+    "test:ci": "deno test --doc --allow-net --allow-read=packages/ --frozen-lockfile ./test './**/*.md'",
     "bump-package": "deno run --allow-read=. --allow-write=. --allow-run=deno,git-cliff tools/bump-package.ts"
   },
   "workspace": {

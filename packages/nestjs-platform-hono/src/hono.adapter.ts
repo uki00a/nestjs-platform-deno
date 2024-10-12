@@ -11,6 +11,8 @@ import type {
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type { Context as HonoContext } from "@hono/hono";
 import { Hono } from "@hono/hono";
+import { serveStatic } from "@hono/hono/deno";
+import type { ServeStaticOptions } from "@hono/hono/serve-static";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
 import { NotImplementedError } from "./errors.ts";
@@ -131,10 +133,21 @@ export class HonoAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override useStaticAssets(..._args: unknown[]): void {
-    throw new NotImplementedError(
-      "HonoAdapter#useStaticAssets is not supported yet",
-    );
+  override useStaticAssets(path: string, options?: ServeStaticOptions): void;
+  /** @internal */
+  override useStaticAssets(options: ServeStaticOptions): void;
+  /** @internal */
+  override useStaticAssets(
+    pathOrOptions: string | ServeStaticOptions,
+    maybeOptions?: ServeStaticOptions,
+  ): void {
+    if (typeof pathOrOptions === "string") {
+      const path = pathOrOptions;
+      this.getInstance().use(path, serveStatic(maybeOptions ?? {}));
+    } else {
+      const options = pathOrOptions;
+      this.getInstance().use(serveStatic(options));
+    }
   }
 
   /** @internal */
