@@ -117,7 +117,7 @@ Deno.test("e2e", async (t) => {
     },
   );
 
-  await t.step("GET `/api/redirect`", async () => {
+  await t.step("`GET /api/redirect`", async () => {
     const res = await fetch(`http://localhost:${port}/api/redirect`, {
       redirect: "manual",
     });
@@ -145,18 +145,37 @@ Deno.test("e2e", async (t) => {
     assert.equal(body.statusCode, 404);
   });
 
-  await t.step("GET `/api/error`", async () => {
+  await t.step("`GET /api/error`", async () => {
     const res = await fetch(`http://localhost:${port}/api/error`);
     assert.equal(res.status, 500);
     assert.equal(await res.text(), "NG");
   });
 
-  await t.step("GET `/README`", async () => {
+  await t.step("`GET /README`", async () => {
     // Tests `HonoAdapter#useStaticAssets`
     const res = await fetch(`http://localhost:${port}/README`);
     assert.equal(res.status, 200);
     const content = await res.text();
     assert.match(content, /nestjs-platform-hono/);
+  });
+
+  await t.step("`OPTIONS /api/healthcheck`", async () => {
+    // Tests CORS support
+    // Simulate a preflight request
+    const res = await fetch(`http://localhost:${port}/api/healthcheck`, {
+      method: "OPTIONS",
+      headers: {
+        origin: "https://example.com",
+        "access-control-request-method": "POST",
+      },
+    });
+    await res.text();
+    assert.equal(res.status, 204);
+    assert.equal(
+      res.headers.get("access-control-allow-origin"),
+      "https://example.com",
+    );
+    assert.equal(res.headers.get("vary"), "Origin");
   });
 
   await app.close();

@@ -11,10 +11,12 @@ import type {
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type { Context as HonoContext } from "@hono/hono";
 import { Hono } from "@hono/hono";
+import { cors } from "@hono/hono/cors";
 import { serveStatic } from "@hono/hono/deno";
 import type { ServeStaticOptions } from "@hono/hono/serve-static";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
+import { toHonoCorsOptions } from "./cors.ts";
 import { ImplementationError, NotImplementedError } from "./errors.ts";
 
 type HonoStatusCode = Parameters<HonoContext["status"]>[0];
@@ -164,12 +166,21 @@ export class HonoAdapter extends AbstractHttpAdapter {
 
   /** @internal */
   override enableCors(
-    _options: CorsOptions | CorsOptionsDelegate<HonoContext>,
-    _prefix?: string,
+    options: CorsOptions | CorsOptionsDelegate<HonoContext>,
+    prefix?: string,
   ) {
-    throw new NotImplementedError(
-      "HonoAdapter#enableCors is not supported yet",
-    );
+    if (prefix) {
+      throw new NotImplementedError(
+        "HonoAdapter#enableCors: `prefix` parameter is not supported yet",
+      );
+    }
+    if (typeof options === "function") {
+      throw new NotImplementedError(
+        "HonoAdapter#enableCors: A callback function is not supported yet",
+      );
+    } else {
+      this.getInstance().use(cors(toHonoCorsOptions(options)));
+    }
   }
 
   /** @internal */

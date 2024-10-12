@@ -261,6 +261,11 @@ export async function createNestApp(): Promise<INestApplication> {
   const app = await NestFactory.create<NestHonoApplication>(
     AppModule,
     HonoAdapter.create(hono),
+    {
+      cors: {
+        origin: ["https://example.com"],
+      },
+    },
   );
   app.useStaticAssets("/README", {
     path: "./packages/nestjs-platform-hono/README.md",
