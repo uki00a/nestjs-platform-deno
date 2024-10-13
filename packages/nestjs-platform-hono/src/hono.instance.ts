@@ -62,7 +62,7 @@ export class NestHonoInstance extends EventEmitter {
     this.#port = port;
     this.#hostname = hostname;
 
-    const tlsOptions: Deno.TlsCertifiedKeyOptions | undefined =
+    const tlsOptions: Deno.TlsCertifiedKeyPem | undefined =
       this.#httpOptions
         ? {
           key: this.#httpOptions.key,
