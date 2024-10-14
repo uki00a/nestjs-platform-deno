@@ -10,6 +10,8 @@ $ deno add @uki00a/nestjs-platform-oak @oak/oak npm:@nestjs/common npm:@nestjs/c
 
 ## Usage
 
+### Setup an application
+
 ```typescript
 import { NestFactory } from "@nestjs/core";
 import { Application } from "@oak/oak";
@@ -20,6 +22,11 @@ const app = await NestFactory.create(
   AppModule,
   OakAdapter.create(new Application()),
 );
+```
+
+### Start the application
+
+```typescript ignore
 await app.listen(3000);
 ```
 

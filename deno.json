@@ -4,7 +4,7 @@
     "emitDecoratorMetadata": true
   },
   "tasks": {
-    "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test example npm:@types/node",
+    "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test npm:@types/node",
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno doc --lint 'packages/**/*.ts'",
     "test": "deno test --allow-net --allow-read=packages/ --no-check ./test ./packages",
     "test:ci": "deno test --doc --allow-net --allow-read=packages/ --frozen-lockfile ./test ./packages './**/*.md'",
