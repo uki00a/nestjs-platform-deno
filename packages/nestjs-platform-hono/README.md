@@ -10,6 +10,8 @@ $ deno add jsr:@uki00a/nestjs-platform-hono jsr:@hono/hono npm:@nestjs/common np
 
 ## Usage
 
+### Setup an application
+
 ```typescript
 import { NestFactory } from "@nestjs/core";
 import type { NestHonoApplication } from "@uki00a/nestjs-platform-hono";
@@ -20,6 +22,11 @@ const app = await NestFactory.create<NestHonoApplication>(
   AppModule,
   HonoAdapter.create(),
 );
+```
+
+### Start the application
+
+```typescript ignore
 await app.listen(8000);
 ```
 
