@@ -13,7 +13,6 @@ import type {
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type {
   Context as OakContext,
-  Middleware as OakMiddleware,
   Next as OakNext,
   Request as OakRequest,
   Response as OakResponse,
