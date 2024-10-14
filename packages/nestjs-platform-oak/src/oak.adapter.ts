@@ -1,5 +1,5 @@
 import type { NestApplicationOptions, RequestMethod } from "@nestjs/common";
-import { HttpException, Logger } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import type {
   ErrorHandler as _ErrorHandler,
   RequestHandler as _RequestHandler,
@@ -12,7 +12,8 @@ import type {
 } from "@nestjs/common/interfaces/external/cors-options.interface.ts";
 import { AbstractHttpAdapter } from "@nestjs/core";
 import type {
-  Middleware as OakMiddleware,
+  Context as OakContext,
+  Next as OakNext,
   Request as OakRequest,
   Response as OakResponse,
   RouterMiddleware as _OakRouterMiddleware,
@@ -158,29 +159,38 @@ export class OakAdapter extends AbstractHttpAdapter {
       throw new Error("OakAdapter#setNotFoundHandler: a handler is invalid");
     }
 
-    const middleware: OakMiddleware = async (ctx, next) => {
-      try {
-        await next();
-      } catch (error) {
-        if (!(error instanceof HttpException) || error.getStatus() !== 404) {
-          throw error;
-        }
-
+    /**
+     * {@linkcode setNotFoundHandler} is called after all other middlewares are registered
+     * {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/nest-application.ts#L194}
+     */
+    async function notFoundHandlerWrapper(
+      ctx: OakContext,
+      next: OakNext,
+    ): Promise<void> {
+      await next();
+      /**
+       * Oak automatically sets the status to `404` if the user has not set it and the `.body` has not been set.
+       * @see {@link https://github.com/oakserver/oak/tree/v17.1.0#response}
+       * @see {@link https://github.com/oakserver/oak/blob/v17.1.0/response.ts#L178-L192}
+       */
+      const isNotFound = ctx.response.status === 404 &&
+        ctx.response.body == null;
+      if (isNotFound) {
         /**
          * NOTE: NestJS does not call `next()`.
-         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/router-proxy.ts#L21}
-         * {@link https://github.com/nestjs/nest/blob/v10.3.9/packages/core/router/routes-resolver.ts#L144-L149}
+         * {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/router/router-proxy.ts#L21}
+         * {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/core/router/routes-resolver.ts#L144-L149}
          */
         const mustNotBeCalled = () => {
           throw new Error("[BUG] next() was unexpectedly called");
         };
-        handler(ctx.request, ctx.response, mustNotBeCalled);
+        await handler(ctx.request, ctx.response, mustNotBeCalled);
       }
-    };
+    }
     if (prefix) {
-      this.#getInstance()?.useOakMiddleware(prefix, middleware);
+      this.#getInstance()?.useOakMiddleware(prefix, notFoundHandlerWrapper);
     } else {
-      this.#getInstance()?.useOakMiddleware(middleware);
+      this.#getInstance()?.useOakMiddleware(notFoundHandlerWrapper);
     }
   }
 

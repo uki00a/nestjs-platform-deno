@@ -1,3 +1,4 @@
+import type { HttpExceptionBody } from "@nestjs/common";
 import { createNestApp } from "./app/mod.ts";
 import assert from "node:assert/strict";
 
@@ -153,8 +154,20 @@ Deno.test("e2e", async (t) => {
 
   await t.step("404", async () => {
     const res = await fetch("http://localhost:3000/api/no_such_route");
-    const _text = await res.text();
+    const body: HttpExceptionBody = await res.json();
+    /** @see {@link https://github.com/nestjs/nest/blob/v10.4.4/packages/common/exceptions/not-found.exception.ts#L44-L48} */
+    const expectedKeys: Array<keyof HttpExceptionBody> = [
+      "error",
+      "message",
+      "statusCode",
+    ];
     assert.equal(res.status, 404);
+    assert.deepEqual(
+      Object.keys(body).sort(),
+      expectedKeys,
+      "An error created by `HttpException.createBody()` should be returned",
+    );
+    assert.equal(body.statusCode, 404);
   });
 
   await t.step("GET `/api/error`", async () => {
