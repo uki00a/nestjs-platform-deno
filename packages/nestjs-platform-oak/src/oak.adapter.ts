@@ -24,6 +24,7 @@ import { Router } from "@oak/oak";
 import { NotImplementedError } from "./errors.ts";
 import type { OakErrorHandler, OakRequestHandler } from "./oak.instance.ts";
 import { NestOakInstance } from "./oak.instance.ts";
+import type { OakStaticAssetsOptions } from "./static-assets.middleware.ts";
 
 interface OakAdapterOptions {
   logger?: Logger;
@@ -205,11 +206,10 @@ export class OakAdapter extends AbstractHttpAdapter {
       if (prefix != null && !ctx.request.url.pathname.startsWith(prefix)) {
         return next();
       }
-      const modifiedPath = ctx.request.url.pathname.slice(prefix.length);
       await ctx.send(
         prefix == null ? contextSendOptions : {
           ...contextSendOptions,
-          path: modifiedPath,
+          path: ctx.request.url.pathname.slice(prefix.length),
         },
       );
     });
