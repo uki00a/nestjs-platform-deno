@@ -24,6 +24,7 @@ import { Router } from "@oak/oak";
 import { NotImplementedError } from "./errors.ts";
 import type { OakErrorHandler, OakRequestHandler } from "./oak.instance.ts";
 import { NestOakInstance } from "./oak.instance.ts";
+import type { OakStaticAssetsOptions } from "./nest-oak-application.interface.ts";
 
 interface OakAdapterOptions {
   logger?: Logger;
@@ -90,7 +91,7 @@ export class OakAdapter extends AbstractHttpAdapter {
   /** @internal */
   override initHttpServer(options: NestApplicationOptions): void {
     const instance = this.#getInstance();
-    instance?.initHttpServer(options);
+    instance.initHttpServer(options);
     this.httpServer = instance;
   }
 
@@ -116,9 +117,6 @@ export class OakAdapter extends AbstractHttpAdapter {
     _requestMethod: RequestMethod,
   ): MiddlewareFactory | Promise<MiddlewareFactory> {
     const instance = this.#getInstance();
-    if (instance == null) {
-      throw new Error("An instance is not initialized yet");
-    }
     const middlewareFactory: MiddlewareFactory = (_path, callback) => {
       instance.useOakMiddleware((ctx, next) => {
         return new Promise<unknown>((resolve, reject) => {
@@ -147,7 +145,7 @@ export class OakAdapter extends AbstractHttpAdapter {
         "OakAdapter#setErrorHandler: an error handler should receive 4 arguments",
       );
     }
-    this.#getInstance()?.useErrorHandler(handler);
+    this.#getInstance().useErrorHandler(handler);
   }
 
   /** @internal */
@@ -188,9 +186,9 @@ export class OakAdapter extends AbstractHttpAdapter {
       }
     }
     if (prefix) {
-      this.#getInstance()?.useOakMiddleware(prefix, notFoundHandlerWrapper);
+      this.#getInstance().useOakMiddleware(prefix, notFoundHandlerWrapper);
     } else {
-      this.#getInstance()?.useOakMiddleware(notFoundHandlerWrapper);
+      this.#getInstance().useOakMiddleware(notFoundHandlerWrapper);
     }
   }
 
@@ -202,10 +200,20 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override useStaticAssets(..._args: unknown[]): void {
-    throw new NotImplementedError(
-      "OakAdapter#useStaticAssets is not supported yet",
-    );
+  override useStaticAssets(options: OakStaticAssetsOptions): void {
+    const { prefix, ...contextSendOptions } = options;
+    this.#getInstance().useOakMiddleware(async (ctx, next) => {
+      if (prefix != null && !ctx.request.url.pathname.startsWith(prefix)) {
+        return next();
+      }
+      const modifiedPath = ctx.request.url.pathname.slice(prefix.length);
+      await ctx.send(
+        prefix == null ? contextSendOptions : {
+          ...contextSendOptions,
+          path: modifiedPath,
+        },
+      );
+    });
   }
 
   /** @internal */
@@ -315,7 +323,7 @@ export class OakAdapter extends AbstractHttpAdapter {
     );
   }
 
-  #getInstance(): NestOakInstance | undefined {
+  #getInstance(): NestOakInstance {
     return this.instance;
   }
 
