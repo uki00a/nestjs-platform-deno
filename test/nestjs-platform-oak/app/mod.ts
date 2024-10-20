@@ -1,3 +1,4 @@
+import type { NestOakApplication } from "@uki00a/nestjs-platform-oak";
 import { JsonBody, OakAdapter } from "@uki00a/nestjs-platform-oak";
 import { DenoKvModule, InjectKv } from "@uki00a/nestjs-denokv";
 import { NestFactory } from "@nestjs/core";
@@ -251,9 +252,15 @@ export class AppModule implements NestModule {
 }
 
 export async function createNestApp(): Promise<INestApplication> {
-  const app = await NestFactory.create(
+  const app = await NestFactory.create<NestOakApplication>(
     AppModule,
     OakAdapter.create(new Application()),
   );
+  app.useStaticAssets({
+    extensions: [".md"],
+    root: "./packages/nestjs-platform-oak",
+    index: "README.md",
+    prefix: "/static",
+  });
   return app;
 }
