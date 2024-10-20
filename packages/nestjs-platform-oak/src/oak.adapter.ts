@@ -24,7 +24,6 @@ import { Router } from "@oak/oak";
 import { NotImplementedError } from "./errors.ts";
 import type { OakErrorHandler, OakRequestHandler } from "./oak.instance.ts";
 import { NestOakInstance } from "./oak.instance.ts";
-import type { OakStaticAssetsOptions } from "./nest-oak-application.interface.ts";
 
 interface OakAdapterOptions {
   logger?: Logger;
