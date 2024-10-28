@@ -1,16 +1,12 @@
 import { mkdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { parseArgs } from "node:util";
+import { allowedPackages, validateVersionArgument } from "./shared.ts";
 
 async function main() {
   const rootDir = dirname(dirname(new URL(import.meta.url).pathname));
   const tmpDir = join(rootDir, "tmp");
   const cliffConfigsDir = join(tmpDir, "cliff");
-  const allowedPackages = [
-    "nestjs-denokv",
-    "nestjs-platform-hono",
-    "nestjs-platform-oak",
-  ];
   const args = parseArgs({
     options: {
       package: {
@@ -34,18 +30,8 @@ async function main() {
       `\`--package\` should be one of ${allowedPackages.join(", ")}`,
     );
   }
-  if (args.values["current-version"] == null) {
-    throw new Error(`\`--current-version\` is required`);
-  }
-  if (args.values["new-version"] == null) {
-    throw new Error(`\`--new-version\` is required`);
-  }
-  if (args.values["current-version"].startsWith("v")) {
-    throw new Error(`\`--current-version\` should not start with \`v\``);
-  }
-  if (args.values["new-version"].startsWith("v")) {
-    throw new Error(`\`--new-version\` should not start with \`v\``);
-  }
+  validateVersionArgument(args.values, "current-version");
+  validateVersionArgument(args.values, "new-version");
 
   const pathToCliffConfig = join(
     cliffConfigsDir,
