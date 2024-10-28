@@ -1,0 +1,42 @@
+name: Create a draft release
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "A package to be released"
+        type: choice
+        required: true
+        options:
+          - nestjs-denokv
+          - nestjs-platform-hono
+          - nestjs-platform-oak
+      new-version:
+        description: "A new version to be released"
+        type: string
+        required: true
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get deno version
+        id: deno-version
+        run: |
+          echo "version=$(cat .deno-version)" >> ${GITHUB_OUTPUT}
+      - name: Set up Deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: ${{ steps.deno-version.outputs.version }}
+      - name: Validate inputs
+        run: |
+          deno run tools/validate-release-inputs.ts --package ${{ inputs.package }} --new-version ${{ inputs.new-version }}
+      - name: Create a release
+        run: |
+          gh release create ${{ inputs.package }}@${{ inputs.new-version }} --draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
