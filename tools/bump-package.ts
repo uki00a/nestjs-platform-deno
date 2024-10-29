@@ -70,7 +70,6 @@ async function main() {
     const newTag = `${args.values.package}@${args.values["new-version"]}`;
     const cliffArgs = [
       "--verbose",
-      "--unreleased",
       "--prepend",
       pathToChangeLog,
       "--config",
