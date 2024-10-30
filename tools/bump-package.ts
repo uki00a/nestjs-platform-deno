@@ -91,6 +91,13 @@ async function main() {
   {
     // Update `packages/<package>/deno.json`
     const denoJson = JSON.parse(await Deno.readTextFile(pathToDenoJson));
+    if (denoJson.version !== args.values["current-version"]) {
+      throw new Error(
+        `Version mismatch detected (deno.json: "${denoJson.version}", --current-version: "${
+          args.values["current-version"]
+        }"))`,
+      );
+    }
     denoJson.version = args.values["new-version"];
     await Deno.writeTextFile(pathToDenoJson, JSON.stringify(denoJson));
     await fmt(pathToDenoJson);
