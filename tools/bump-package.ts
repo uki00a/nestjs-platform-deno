@@ -76,6 +76,8 @@ async function main() {
       pathToCliffConfig,
       `--tag`,
       newTag,
+      "--tag-pattern",
+      `^${args.values.package}@`,
       commitRange,
     ];
     const cliffOutput = await new Deno.Command("git-cliff", {
