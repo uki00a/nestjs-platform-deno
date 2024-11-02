@@ -32,11 +32,12 @@ jobs:
         uses: denoland/setup-deno@main
         with:
           deno-version: ${{ steps.deno-version.outputs.version }}
-      - name: Validate inputs
+      - name: Get the package's current version
+        id: package-version
         run: |
-          deno run tools/validate-release-inputs.ts --package ${{ inputs.package }} --new-version ${{ inputs.new-version }}
+          echo "version=$(deno run --allow-read=. tools/show-package-current-version.ts --package ${{ inputs.package }})" >> ${GITHUB_OUTPUT}
       - name: Create a release
         run: |
-          gh release create ${{ inputs.package }}@${{ inputs.new-version }} --draft
+          gh release create ${{ inputs.package }}@${{ steps.package-version.outputs.version }} --draft --title ${{ inputs.package }}@${{ steps.package-version.outputs.version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

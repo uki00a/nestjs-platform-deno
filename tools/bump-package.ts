@@ -1,10 +1,10 @@
 import { mkdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { parseArgs } from "node:util";
-import { allowedPackages, validateVersionArgument } from "./shared.ts";
+import { allowedPackages, getRootDir } from "./shared.ts";
 
 async function main() {
-  const rootDir = dirname(dirname(new URL(import.meta.url).pathname));
+  const rootDir = getRootDir();
   const tmpDir = join(rootDir, "tmp");
   const cliffConfigsDir = join(tmpDir, "cliff");
   const args = parseArgs({
@@ -121,4 +121,17 @@ if (import.meta.main) {
     console.error(error);
     Deno.exit(1);
   });
+}
+
+function validateVersionArgument<
+  TArgs extends Record<string, string | null | undefined>,
+  TArg extends keyof TArgs,
+>(args: TArgs, arg: TArg): void {
+  const version = args[arg];
+  if (version == null) {
+    throw new Error(`\`${String(arg)}\` is required`);
+  }
+  if (String(version).startsWith("v")) {
+    throw new Error(`\`${String(arg)}\` should not start with \`v\``);
+  }
 }
