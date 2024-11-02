@@ -34,9 +34,9 @@ jobs:
           deno-version: ${{ steps.deno-version.outputs.version }}
       - name: Validate inputs
         run: |
-          deno run tools/validate-release-inputs.ts --package ${{ inputs.package }} --new-version ${{ inputs.new-version }}
+          deno run --allow-read=. tools/show-package-current-version.ts --package ${{ inputs.package }}
       - name: Create a release
         run: |
-          gh release create ${{ inputs.package }}@${{ inputs.new-version }} --draft
+          gh release create ${{ inputs.package }}@${{ inputs.new-version }} --draft --title ${{ inputs.package }}@${{ inputs.new-version }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
