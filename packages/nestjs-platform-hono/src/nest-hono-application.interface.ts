@@ -5,7 +5,12 @@ import type { ServeStaticOptions } from "@hono/hono/serve-static";
  * @internal
  * @see {@linkcode ServeStaticOptions}
  */
-type HonoServeStaticOptions = ServeStaticOptions;
+export interface HonoServeStaticOptions extends ServeStaticOptions {
+  /**
+   * A path prefix under which static assets are served.
+   */
+  prefix?: string;
+}
 
 /**
  * This type is returned by `NestFactory#create`.
@@ -30,7 +35,7 @@ export interface NestHonoApplication<
   TServer = unknown,
 > extends INestApplication<TServer> {
   /**
-   * Registers static assets under a {@linkcode path}.
+   * Registers static assets.
    */
-  useStaticAssets(path: string, options: HonoServeStaticOptions): this;
+  useStaticAssets(options: HonoServeStaticOptions): this;
 }

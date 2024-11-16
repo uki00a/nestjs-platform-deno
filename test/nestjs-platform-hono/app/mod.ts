@@ -267,8 +267,13 @@ export async function createNestApp(): Promise<INestApplication> {
       },
     },
   );
-  app.useStaticAssets("/README", {
-    path: "./packages/nestjs-platform-hono/README.md",
+  const staticAssetsPrefix = "/static";
+  app.useStaticAssets({
+    prefix: `${staticAssetsPrefix}/*`,
+    rewriteRequestPath(path) {
+      return path.slice(staticAssetsPrefix.length);
+    },
+    root: "./packages/nestjs-platform-hono",
   });
   return app;
 }

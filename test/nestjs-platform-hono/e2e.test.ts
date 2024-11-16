@@ -151,9 +151,9 @@ Deno.test("e2e", async (t) => {
     assert.equal(await res.text(), "NG");
   });
 
-  await t.step("`GET /README`", async () => {
+  await t.step("`GET /static/README.md`", async () => {
     // Tests `HonoAdapter#useStaticAssets`
-    const res = await fetch(`http://localhost:${port}/README`);
+    const res = await fetch(`http://localhost:${port}/static/README.md`);
     assert.equal(res.status, 200);
     const content = await res.text();
     assert.match(content, /nestjs-platform-hono/);
