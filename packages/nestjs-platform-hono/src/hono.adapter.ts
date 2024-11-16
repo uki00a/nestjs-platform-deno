@@ -13,9 +13,9 @@ import type { Context as HonoContext } from "@hono/hono";
 import { Hono } from "@hono/hono";
 import { cors } from "@hono/hono/cors";
 import { serveStatic } from "@hono/hono/deno";
-import type { ServeStaticOptions } from "@hono/hono/serve-static";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
+import type { HonoServeStaticOptions } from "./nest-hono-application.interface.ts";
 import { toHonoCorsOptions } from "./cors.ts";
 import { ImplementationError, NotImplementedError } from "./errors.ts";
 
@@ -160,8 +160,17 @@ export class HonoAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override useStaticAssets(path: string, options?: ServeStaticOptions): void {
-    this.getInstance().use(path, serveStatic(options ?? {}));
+  override useStaticAssets(options: HonoServeStaticOptions): void {
+    const instance = this.getInstance();
+    const {
+      prefix,
+      ...honoOptions
+    } = options ?? {};
+    if (prefix) {
+      instance.use(prefix, serveStatic(honoOptions));
+    } else {
+      instance.use(serveStatic(honoOptions));
+    }
   }
 
   /** @internal */
