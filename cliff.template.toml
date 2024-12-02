@@ -54,12 +54,14 @@ commit_preprocessors = [
 ]
 # regex for parsing and grouping commits
 commit_parsers = [
-  { message = "^feat:", group = "<!-- 0 -->🚀 Features" },
-  { message = "^feat\\($PACKAGE\\):", group = "<!-- 0 -->🚀 Features" },
-  { message = "^fix:", group = "<!-- 1 -->🐛 Bug Fixes" },
-  { message = "^fix\\($PACKAGE\\):", group = "<!-- 1 -->🐛 Bug Fixes" },
-  { message = "^perf:", group = "<!-- 2 -->⚡ Performance" },
-  { message = "^perf\\($PACKAGE\\)", group = "<!-- 2 -->⚡ Performance" },
+  { message = "^BREAKING:", group = "<!-- 1 -->⚠️ Breaking changes" },
+  { message = "^BREAKING\\($PACKAGE\\):", group = "<!-- 1 -->⚠️ Breaking changes" },
+  { message = "^feat:", group = "<!-- 1 -->🚀 Features" },
+  { message = "^feat\\($PACKAGE\\):", group = "<!-- 1 -->🚀 Features" },
+  { message = "^fix:", group = "<!-- 2 -->🐛 Bug Fixes" },
+  { message = "^fix\\($PACKAGE\\):", group = "<!-- 2 -->🐛 Bug Fixes" },
+  { message = "^perf:", group = "<!-- 3 -->⚡ Performance" },
+  { message = "^perf\\($PACKAGE\\)", group = "<!-- 3 -->⚡ Performance" },
   { message = "^deps:", group = "<!-- 3 -->🤖 Dependencies" },
   { message = "^deps\\($PACKAGE\\)", group = "<!-- 3 -->🤖 Dependencies" }
 ]
