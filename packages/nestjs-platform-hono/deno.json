@@ -1,8 +1,6 @@
 {
   "name": "@uki00a/nestjs-platform-hono",
-  "version": "0.2.0",
-  "imports": {
-    "@/app.module.ts": "../../test/doctest/app.module.ts"
-  },
+  "version": "0.3.0",
+  "imports": { "@/app.module.ts": "../../test/doctest/app.module.ts" },
   "exports": { ".": "./src/index.ts" }
 }
