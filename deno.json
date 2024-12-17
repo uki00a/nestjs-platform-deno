@@ -8,7 +8,8 @@
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno doc --lint 'packages/**/*.ts'",
     "test": "deno test --allow-net --allow-read=packages/ --no-check ./test ./packages",
     "test:ci": "deno test --doc --allow-net --allow-read=packages/ --frozen-lockfile ./test ./packages './**/*.md'",
-    "bump-package": "deno run --allow-read=. --allow-write=. --allow-run=deno,git-cliff tools/bump-package.ts"
+    "bump-package": "deno run --allow-read=. --allow-write=. --allow-run=deno,git-cliff tools/bump-package.ts",
+    "build-npm": "deno run -A tools/build-npm.ts"
   },
   "workspace": {
     "members": [
@@ -18,6 +19,7 @@
     ]
   },
   "imports": {
+    "@deno/dnt": "jsr:@deno/dnt@^0.41.3",
     "@nestjs/common": "npm:@nestjs/common@^10",
     "@nestjs/core": "npm:@nestjs/core@^10",
     "@oak/oak": "jsr:@oak/oak@^17",
