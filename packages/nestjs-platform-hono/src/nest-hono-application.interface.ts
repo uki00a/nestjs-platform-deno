@@ -1,5 +1,5 @@
 import type { INestApplication } from "@nestjs/common";
-import type { ServeStaticOptions } from "@hono/hono/serve-static";
+import type { ServeStaticOptions } from "./deno.deps.ts";
 
 /**
  * @internal
