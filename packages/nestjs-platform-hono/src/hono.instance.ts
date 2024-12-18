@@ -10,7 +10,7 @@ import type {
   MiddlewareHandler,
   Next as HonoNext,
   NotFoundHandler,
-} from "@hono/hono";
+} from "./deno.deps.ts";
 import { EventEmitter } from "node:events";
 
 import { NotImplementedError } from "./errors.ts";

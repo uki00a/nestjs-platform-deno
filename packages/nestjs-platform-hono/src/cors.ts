@@ -1,7 +1,7 @@
 import type {
   CorsOptions as NestCorsOptions,
 } from "@nestjs/common/interfaces/external/cors-options.interface.ts";
-import type { cors } from "@hono/hono/cors";
+import type { cors } from "./deno.deps.ts";
 
 type HonoCorsOptions = NonNullable<Parameters<typeof cors>[0]>;
 

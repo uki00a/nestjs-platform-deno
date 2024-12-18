@@ -9,10 +9,8 @@ import type {
   CorsOptionsDelegate,
 } from "@nestjs/common/interfaces/external/cors-options.interface.ts";
 import { AbstractHttpAdapter } from "@nestjs/core";
-import type { Context as HonoContext } from "@hono/hono";
-import { Hono } from "@hono/hono";
-import { cors } from "@hono/hono/cors";
-import { serveStatic } from "@hono/hono/deno";
+import type { Context as HonoContext } from "./deno.deps.ts";
+import { cors, Hono, serveStatic } from "./deno.deps.ts";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
 import type { HonoServeStaticOptions } from "./nest-hono-application.interface.ts";
