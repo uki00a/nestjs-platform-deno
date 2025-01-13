@@ -30,6 +30,48 @@ const app = await NestFactory.create<NestHonoApplication>(
 await app.listen(8000);
 ```
 
+## Advanced features
+
+### Integration with `hono/jsx`
+
+To use the integration with `hono/jsx`, you should add the following to
+`deno.json`:
+
+```jsonc
+{
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "@hono/hono/jsx"
+    // ...
+  }
+  // ...
+}
+```
+
+Then apply `@Html()` decorator to an action method that returns JSX:
+
+<!-- See: `../../test/nestjs-platform-hono/app/view.controller.tsx` -->
+
+```tsx
+import { Html } from "@uki00a/nestjs-platform-hono";
+import { Controller, Get } from "@nestjs/common";
+
+@Controller("/")
+export class ViewController {
+  @Html()
+  @Get("/")
+  home() {
+    return (
+      <html>
+        <body>
+          <div>{"Hello hono/jsx!"}</div>
+        </body>
+      </html>
+    );
+  }
+}
+```
+
 ## Limitations
 
 ### `@Body()` decorator does not work

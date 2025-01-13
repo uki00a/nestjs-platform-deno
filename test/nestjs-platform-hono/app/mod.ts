@@ -35,6 +35,7 @@ import {
 } from "@nestjs/common";
 import { Hono } from "@hono/hono";
 import type { Context } from "@hono/hono";
+import { ViewController } from "./view.controller.tsx";
 import assert from "node:assert/strict";
 
 const kTagService = "TagService";
@@ -246,6 +247,7 @@ class SampleMiddleware implements NestMiddleware {
   ],
   controllers: [
     ApiController,
+    ViewController,
   ],
 })
 export class AppModule implements NestModule {

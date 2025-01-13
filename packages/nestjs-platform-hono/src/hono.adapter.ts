@@ -13,6 +13,7 @@ import type { Context as HonoContext } from "@hono/hono";
 import { Hono } from "@hono/hono";
 import { cors } from "@hono/hono/cors";
 import { serveStatic } from "@hono/hono/deno";
+import { shouldReturnHtml } from "./decorators.ts";
 import type { HonoRequestHandler, MiddlewareFactory } from "./hono.instance.ts";
 import { NestHonoInstance } from "./hono.instance.ts";
 import type { HonoServeStaticOptions } from "./nest-hono-application.interface.ts";
@@ -249,17 +250,34 @@ export class HonoAdapter extends AbstractHttpAdapter {
 
   /**
    * @internal
+   *
+   * NOTE: It's safe to return `Promise` from this method:
+   * * {@link https://github.com/nestjs/nest/blob/v10.4.15/packages/core/router/router-execution-context.ts#L457}
+   * * {@link https://github.com/nestjs/nest/blob/v10.4.15/packages/core/router/router-response-controller.ts#L33-L39}
    */
   override reply(
     c: HonoContext,
     body: unknown,
     statusCode?: HonoStatusCode | undefined,
-  ): void {
+  ): void | Promise<void> {
     if (statusCode != null) {
       c.status(statusCode);
     }
 
-    if (
+    if (shouldReturnHtml(c)) {
+      // @ts-expect-error TODO: Handle type errors more carefully.
+      const input: string | Promise<string> = body;
+      const html = c.html(input);
+      if (typeof html === "string") {
+        c.res = html;
+      } else if (html instanceof Promise) {
+        return html.then((html) => {
+          c.res = html;
+        });
+      } else {
+        throw new Error("Unexpected response: " + html);
+      }
+    } else if (
       typeof body === "string" || body instanceof ArrayBuffer ||
       body instanceof ReadableStream
     ) {

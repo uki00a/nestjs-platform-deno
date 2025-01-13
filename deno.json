@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "jsx": "precompile",
+    "jsxImportSource": "@hono/hono/jsx"
   },
   "tasks": {
     "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test npm:@types/node",
