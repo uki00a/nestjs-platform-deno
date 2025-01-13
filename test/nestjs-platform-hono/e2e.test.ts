@@ -178,5 +178,14 @@ Deno.test("e2e", async (t) => {
     assert.equal(res.headers.get("vary"), "Origin");
   });
 
+  await t.step("`GET /`", async () => {
+    // Tests `hono/jsx` support (`@Html()` decorator)
+    const res = await fetch(`http://localhost:${port}/`);
+    const html = await res.text();
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get("content-type"), "text/html; charset=UTF-8");
+    assert.match(html, /<div>Hello\shono\/jsx\!<\/div>/);
+  });
+
   await app.close();
 });

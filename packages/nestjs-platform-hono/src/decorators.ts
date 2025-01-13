@@ -1,5 +1,11 @@
-import type { ExecutionContext, PipeTransform, Type } from "@nestjs/common";
-import { createParamDecorator } from "@nestjs/common";
+import type {
+  CallHandler,
+  ExecutionContext,
+  NestInterceptor,
+  PipeTransform,
+  Type,
+} from "@nestjs/common";
+import { createParamDecorator, UseInterceptors } from "@nestjs/common";
 
 import type { Context } from "@hono/hono";
 
@@ -18,3 +24,24 @@ export const JsonBody: (
     return body;
   },
 );
+
+const kIsHtmlResponse = Symbol("nestjs-platform-hono.isHtmlResponse");
+/** @internal */
+export function shouldReturnHtml(c: Context): boolean {
+  // @ts-expect-error This is an internal property.
+  return c[kIsHtmlResponse];
+}
+class HtmlInterceptor implements NestInterceptor {
+  intercept(ctx: ExecutionContext, next: CallHandler) {
+    const c = ctx.switchToHttp().getRequest<Context>();
+    // @ts-expect-error This is an internal property.
+    c[kIsHtmlResponse] = true;
+    return next.handle();
+  }
+}
+/**
+ * This method decorator is equivalent to {@linkcode Context.html}.
+ */
+export function Html(): MethodDecorator {
+  return UseInterceptors(HtmlInterceptor);
+}
