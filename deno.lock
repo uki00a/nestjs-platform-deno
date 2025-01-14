@@ -1,7 +1,7 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@hono/hono@4": "4.6.4",
+    "jsr:@hono/hono@4": "4.6.14",
     "jsr:@oak/commons@1": "1.0.0",
     "jsr:@oak/oak@17": "17.1.0",
     "jsr:@std/assert@1": "1.0.6",
@@ -20,8 +20,8 @@
     "npm:path-to-regexp@6.2.1": "6.2.1"
   },
   "jsr": {
-    "@hono/hono@4.6.4": {
-      "integrity": "9bbd937653ab902405af33743561140f8883d27dc730eb9ceac665e2468c8bf6"
+    "@hono/hono@4.6.14": {
+      "integrity": "b39a5488266adf448fb1081bc3071a0d05145e72f3ab3ff83cf140e780c6c1de"
     },
     "@oak/commons@1.0.0": {
       "integrity": "49805b55603c3627a9d6235c0655aa2b6222d3036b3a13ff0380c16368f607ac",
