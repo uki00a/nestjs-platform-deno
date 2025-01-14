@@ -1,5 +1,18 @@
 # nestjs-platform-hono
 
+## `0.4.0` (2025-01-14)
+
+### 🚀 Features
+
+- support `hono/jsx`
+  ([#96](https://github.com/uki00a/nestjs-platform-deno/pull/96))
+
+### 🤖 Dependencies
+
+- `Deno@2.1.3` ([#93](https://github.com/uki00a/nestjs-platform-deno/pull/93))
+- bump `@hono/hono` to `v4.6.14`
+  ([#97](https://github.com/uki00a/nestjs-platform-deno/pull/97))
+
 ## `0.3.0` (2024-12-03)
 
 ### ⚠️ Breaking changes
