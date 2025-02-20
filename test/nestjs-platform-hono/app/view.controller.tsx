@@ -9,7 +9,7 @@ export class ViewController {
     return (
       <html>
         <body>
-          <div>{"Hello hono/jsx!"}</div>
+          <div>Hello hono/jsx!</div>
         </body>
       </html>
     );
