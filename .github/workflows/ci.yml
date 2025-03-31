@@ -10,16 +10,16 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
       - name: Get deno version
         id: deno-version
         run: |
           echo "version=$(cat .deno-version)" >> ${GITHUB_OUTPUT}
       - name: Set up Deno
-        uses: denoland/setup-deno@main
+        uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
         with:
           deno-version: ${{ steps.deno-version.outputs.version }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f # v3.4.3
         with:
           path: |
             ~/.deno
