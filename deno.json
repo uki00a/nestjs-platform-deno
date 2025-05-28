@@ -8,8 +8,8 @@
   "tasks": {
     "upgrade-deps": "deno cache --frozen-lockfile=false 'packages/*/src/index.ts' test npm:@types/node",
     "check": "deno fmt --check && deno lint && deno check 'packages/**/*.ts' && deno doc --lint 'packages/**/*.ts'",
-    "test": "deno test --allow-net --allow-read=packages/ --no-check ./test ./packages",
-    "test:ci": "deno test --doc --allow-net --allow-read=packages/ --frozen-lockfile ./test ./packages './**/*.md'",
+    "test": "deno test --allow-net --allow-read=packages/ --allow-env=NEST_DEBUG --no-check ./test ./packages",
+    "test:ci": "deno test --doc --allow-net --allow-read=packages/ --allow-env=NEST_DEBUG --frozen-lockfile ./test ./packages './**/*.md'",
     "bump-package": "deno run --allow-read=. --allow-write=. --allow-run=deno,git-cliff tools/bump-package.ts"
   },
   "workspace": {
