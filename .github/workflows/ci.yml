@@ -16,15 +16,11 @@ jobs:
         run: |
           echo "version=$(cat .deno-version)" >> ${GITHUB_OUTPUT}
       - name: Set up Deno
-        uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+        uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb # v2.0.3
         with:
           deno-version: ${{ steps.deno-version.outputs.version }}
-      - uses: actions/cache@2f8e54208210a422b2efd51efaa6bd6d7ca8920f # v3.4.3
-        with:
-          path: |
-            ~/.deno
-            ~/.cache/deno
-          key: ${{ runner.os }}-deno-v1-${{ hashFiles('**/deno.lock', '**/.deno-version') }}
+          cache: true
+          cache-hash: ${{ hashFiles('.deno-version', 'deno.lock') }}
       - name: Run linters
         run:
           deno task check
