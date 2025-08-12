@@ -54,8 +54,8 @@ export class OakAdapter extends AbstractHttpAdapter {
   }
 
   /** @internal */
-  override close(): void {
-    return this.getInstance()?.close();
+  override async close(): Promise<void> {
+    await this.getInstance()?.close();
   }
 
   /** @internal */
