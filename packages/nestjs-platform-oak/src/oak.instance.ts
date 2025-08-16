@@ -45,6 +45,7 @@ export class NestOakInstance extends EventEmitter {
     };
   }
 
+  #listenPromise?: Promise<void>;
   listen(
     port: number,
     hostname: string | undefined,
@@ -66,7 +67,7 @@ export class NestOakInstance extends EventEmitter {
         key: this.#httpOptions.key,
       }
       : { secure: false as const };
-    this.application.listen({
+    this.#listenPromise = this.application.listen({
       port,
       hostname,
       signal: abortController.signal,
@@ -74,8 +75,14 @@ export class NestOakInstance extends EventEmitter {
     });
   }
 
-  close(): void {
+  async close(): Promise<void> {
+    const { promise, resolve } = Promise.withResolvers<void>();
+    this.application.addEventListener("close", () => {
+      resolve(undefined);
+    }, { once: true });
     this.abortController?.abort();
+    await this.#listenPromise;
+    await promise;
   }
 
   #httpOptions?: HttpsOptions;
