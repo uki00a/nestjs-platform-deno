@@ -76,9 +76,9 @@ export class NestOakInstance extends EventEmitter {
   }
 
   async close(): Promise<void> {
-    const { promise, resolve } = Promise.withResolvers();
+    const { promise, resolve } = Promise.withResolvers<void>();
     this.application.addEventListener("close", () => {
-      resolve();
+      resolve(undefined);
     }, { once: true });
     this.abortController?.abort();
     await this.#listenPromise;
