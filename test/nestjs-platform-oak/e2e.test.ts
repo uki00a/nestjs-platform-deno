@@ -203,6 +203,7 @@ Deno.test({
 
     await app.close();
   },
+  // TODO: Resource leaks occur after updating to Deno v2.4.3.
   sanitizeOps: false,
   sanitizeResources: false,
 });
